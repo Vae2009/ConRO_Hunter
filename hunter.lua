@@ -813,6 +813,7 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 --Abilities	
 	local _AspectoftheEagle, _AspectoftheEagle_RDY														= ConRO:AbilityReady(Ability.AspectoftheEagle, timeShift);
 		local _AspectoftheEagle_BUFF																		= ConRO:Aura(Buff.AspectoftheEagle, timeShift);
+	local _Barrage, _Barrage_RDY = ConRO:AbilityReady(Ability.Barrage, timeShift);
 	local _Butchery, _Butchery_RDY						 												= ConRO:AbilityReady(Ability.Butchery, timeShift);
 		local _Butchery_CHARGES, _Butchery_MCHARGES	= ConRO:SpellCharges(_Butchery);
 	local _CallPet, _CallPet_RDY						 												= ConRO:AbilityReady(Ability.CallPet.One, timeShift);
@@ -822,6 +823,7 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 	local _ExplosiveShot, _ExplosiveShot_RDY = ConRO:AbilityReady(Ability.ExplosiveShot, timeShift);
 	local _Flare, _Flare_RDY																			= ConRO:AbilityReady(Ability.Flare, timeShift);
 	local _FreezingTrap, _FreezingTrap_RDY																= ConRO:AbilityReady(Ability.FreezingTrap, timeShift);
+	local _FuryoftheEagle, _FuryoftheEagle_RDY = ConRO:AbilityReady(Ability.FuryoftheEagle, timeShift);
 	local _Harpoon, _Harpoon_RDY						 												= ConRO:AbilityReady(Ability.Harpoon, timeShift);
 		local _, _Harpoon_RANGE						 														= ConRO:Targets(Ability.Harpoon);
 	local _KillCommand, _KillCommand_RDY				 												= ConRO:AbilityReady(Ability.KillCommand, timeShift);
@@ -931,6 +933,11 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 		if _ExplosiveShot_RDY then
 			tinsert(ConRO.SuggestedSpells, _ExplosiveShot);
 			_ExplosiveShot_RDY = false;
+		end
+
+		if _Barrage_RDY then
+			tinsert(ConRO.SuggestedSpells, _Barrage);
+			_Barrage_RDY = false;
 		end
 
 		if tChosen[Ability.Butchery] then
@@ -1094,6 +1101,11 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 		if _ExplosiveShot_RDY then
 			tinsert(ConRO.SuggestedSpells, _ExplosiveShot);
 			_ExplosiveShot_RDY = false;
+		end
+
+		if _Barrage_RDY then
+			tinsert(ConRO.SuggestedSpells, _Barrage);
+			_Barrage_RDY = false;
 		end
 
 		if _RaptorStrike_RDY and not tChosen[Ability.MongooseBite.talentID] then
