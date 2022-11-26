@@ -99,7 +99,9 @@ function ConRO.Hunter.Disabled(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 end
 
 function ConRO.Hunter.Under10(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
---Info
+	wipe(ConRO.SuggestedSpells)
+	local Racial, Ability, Passive, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.Hunter_Ability, ids.Hunter_Passive, ids.Hunter_Form, ids.Hunter_Buff, ids.Hunter_Debuff, ids.Hunter_PetAbility, ids.Hunter_PvPTalent, ids.Glyph;
+--Info	
 	local _Player_Level																					= UnitLevel("player");
 	local _Player_Percent_Health 																		= ConRO:PercentHealth('player');
 	local _is_PvP																						= ConRO:IsPvP();
@@ -135,7 +137,9 @@ return nil;
 end
 
 function ConRO.Hunter.Under10Def(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
---Info
+	wipe(ConRO.SuggestedDefSpells)
+	local Racial, Ability, Passive, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.Hunter_Ability, ids.Hunter_Passive, ids.Hunter_Form, ids.Hunter_Buff, ids.Hunter_Debuff, ids.Hunter_PetAbility, ids.Hunter_PvPTalent, ids.Glyph;
+--Info	
 	local _Player_Level																					= UnitLevel("player");
 	local _Player_Percent_Health 																		= ConRO:PercentHealth('player');
 	local _is_PvP																						= ConRO:IsPvP();
