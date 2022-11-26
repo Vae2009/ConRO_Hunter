@@ -592,7 +592,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 			end
 		end
 
-		if _SteadyShot_RDY and tChosen[Passive.SteadyFocus.talentID] and (currentSpell == _SteadyShot or ConRO.lastSpellId ~= _SteadyShot) and _SteadyFocus_DUR <= 5 then
+		if _SteadyShot_RDY and tChosen[Passive.SteadyFocus.talentID] and (currentSpell == _SteadyShot and ConRO.lastSpellId ~= _SteadyShot) and _SteadyFocus_DUR <= 5 then
 			tinsert(ConRO.SuggestedSpells, _SteadyShot);
 			_SteadyShot_RDY = false;
 		end
@@ -641,7 +641,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 			_Volley_RDY = false;
 		end
 
-		if _SerpentSting_RDY and not _SerpentSting_DEBUFF and ConRO_SingleButton:IsVisible() then
+		if _SerpentSting_RDY and not _SerpentSting_DEBUFF and ConRO.lastSpellId ~= _SerpentSting and ConRO_SingleButton:IsVisible() then
 			tinsert(ConRO.SuggestedSpells, _SerpentSting);
 			_SerpentSting_DEBUFF = true;
 		end
@@ -656,7 +656,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 			_WailingArrow_RDY = false;
 		end
 
-		if _MultiShot_RDY and not _TrickShots_BUFF then
+		if _MultiShot_RDY and not _TrickShots_BUFF and ConRO_AoEButton:IsVisible() then
 			tinsert(ConRO.SuggestedSpells, _MultiShot);
 			_TrickShots_BUFF = true;
 			_PreciseShots_COUNT = _PreciseShots_COUNT - 1;
@@ -682,7 +682,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 			_Trueshot_RDY = false;
 		end
 
-		if _AimedShot_RDY and (_AimedShot_CHARGES == 2 or (_AimedShot_CHARGES == 1 and _AimedShot_CCD <= _AimedShot_time + .5)) and currentSpell ~= _AimedShot then
+		if _AimedShot_RDY and (not _PreciseShots_BUFF or _Trueshot_BUFF) and currentSpell ~= _AimedShot then
 			tinsert(ConRO.SuggestedSpells, _AimedShot);
 			_AimedShot_RDY = false;
 		end
