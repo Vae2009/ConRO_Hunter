@@ -228,6 +228,8 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 		local _HuntersPrey_BUFF = ConRO:Aura(Buff.HuntersPrey, timeShift);
 	local _MultiShot, _MultiShot_RDY = ConRO:AbilityReady(Ability.MultiShot, timeShift);
 		local _BeastCleave_BUFF, _, _BeastCleave_DUR = ConRO:Aura(Buff.BeastCleave, timeShift + 1);
+	local _PrimalRageCR = ConRO:AbilityReady(Ability.CommandPet.PrimalRage, timeShift);
+	local _PrimalRage, _PrimalRage_RDY = ConRO:AbilityReady(PetAbility.PrimalRage, timeShift, 'pet');
 	local _SerpentSting, _SerpentSting_RDY = ConRO:AbilityReady(Ability.SerpentSting, timeShift);
 		local _SerpentSting_BUFF = ConRO:Aura(Buff.SerpentSting, timeShift + 5);
 	local _Stampede, _Stampede_RDY = ConRO:AbilityReady(Ability.Stampede, timeShift);
@@ -258,6 +260,8 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 	ConRO:AbilityBurst(_CalloftheWild, _CalloftheWild_RDY and ConRO:BurstMode(_CalloftheWild));
 	ConRO:AbilityBurst(_DeathChakram, _DeathChakram_RDY and ConRO:BurstMode(_DeathChakram));
 	ConRO:AbilityBurst(_Stampede, _Stampede_RDY and ((_BestialWrath_BUFF and _AspectoftheWild_BUFF) or (_AspectoftheWild_BUFF and _in_combat)) and ConRO:BurstMode(_Stampede));
+	ConRO:AbilityBurst(_PrimalRage, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
+	ConRO:AbilityBurst(_PrimalRageCR, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
 
 --Warnings
 	ConRO:Warnings("Call your pet!", _CallPet_RDY and not _Pet_summoned);
@@ -499,6 +503,8 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 	local _MultiShot, _MultiShot_RDY = ConRO:AbilityReady(Ability.MultiShot, timeShift);
 		local _TrickShots_BUFF = ConRO:Aura(Buff.TrickShots, timeShift);
 		local _MultiShot_TARGETS = ConRO:Targets(Ability.MultiShot);
+	local _PrimalRageCR = ConRO:AbilityReady(Ability.CommandPet.PrimalRage, timeShift);
+	local _PrimalRage, _PrimalRage_RDY = ConRO:AbilityReady(PetAbility.PrimalRage, timeShift, 'pet');
 	local _RapidFire, _RapidFire_RDY = ConRO:AbilityReady(Ability.RapidFire, timeShift);
 	local _SerpentSting, _SerpentSting_RDY = ConRO:AbilityReady(Ability.SerpentSting, timeShift);
 		local _SerpentSting_DEBUFF = ConRO:TargetAura(Debuff.SerpentSting, timeShift + 5);
@@ -560,6 +566,8 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 	ConRO:AbilityBurst(_Volley, _Volley_RDY and (_RapidFire_RDY or _AimedShot_RDY) and ConRO:BurstMode(_Volley));
 	ConRO:AbilityBurst(_Stampede, _Stampede_RDY and ConRO:BurstMode(_Stampede));
 	ConRO:AbilityBurst(_DeathChakram, _DeathChakram_RDY and ConRO:BurstMode(_DeathChakram));
+	ConRO:AbilityBurst(_PrimalRage, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
+	ConRO:AbilityBurst(_PrimalRageCR, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
 
 --Warnings
 
@@ -616,7 +624,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 		end
 
 		if _DoubleTap_BUFF then
-			if _MultiShot_RDY and not _TrickShots_BUFF and ConRO_AoEButton:IsVisible() then
+			if _MultiShot_RDY and (not _TrickShots_BUFF or currentSpell == _AimedShot or select(2, ConRO:EndChannel()) == _RapidFire) and ConRO_AoEButton:IsVisible() then
 				tinsert(ConRO.SuggestedSpells, _MultiShot);
 				_TrickShots_BUFF = true;
 				_PreciseShots_COUNT = _PreciseShots_COUNT - 1;
@@ -662,7 +670,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 			_WailingArrow_RDY = false;
 		end
 
-		if _MultiShot_RDY and not _TrickShots_BUFF and ConRO_AoEButton:IsVisible() then
+		if _MultiShot_RDY and (not _TrickShots_BUFF or currentSpell == _AimedShot or select(2, ConRO:EndChannel()) == _RapidFire) and ConRO_AoEButton:IsVisible() then
 			tinsert(ConRO.SuggestedSpells, _MultiShot);
 			_TrickShots_BUFF = true;
 			_PreciseShots_COUNT = _PreciseShots_COUNT - 1;
@@ -842,6 +850,8 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 	local _, _TipoftheSpear_COUNT																			= ConRO:Aura(Buff.TipoftheSpear, timeShift);
 	local _KillShot, _KillShot_RDY																		= ConRO:AbilityReady(Ability.KillShot, timeShift);
 	local _Muzzle, _Muzzle_RDY					 														= ConRO:AbilityReady(Ability.Muzzle, timeShift);
+	local _PrimalRageCR = ConRO:AbilityReady(Ability.CommandPet.PrimalRage, timeShift);
+	local _PrimalRage, _PrimalRage_RDY = ConRO:AbilityReady(PetAbility.PrimalRage, timeShift, 'pet');
 	local _RaptorStrike, _RaptorStrike_RDY					 											= ConRO:AbilityReady(Ability.RaptorStrike, timeShift);
 		local _VipersVenom_BUFF																				= ConRO:Aura(Buff.VipersVenom, timeShift);
 	local _SerpentSting, _SerpentSting_RDY																= ConRO:AbilityReady(Ability.SerpentSting, timeShift);
@@ -904,10 +914,11 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 	ConRO:AbilityPurge(_TranquilizingShot, _TranquilizingShot_RDY and ConRO:Purgable());
 	ConRO:AbilityMovement(_Harpoon, _Harpoon_RDY and _Harpoon_RANGE and not _target_in_melee);
 
-	ConRO:AbilityBurst(_CoordinatedAssault, _CoordinatedAssault_RDY and ConRO:BurstMode(_CoordinatedAssault));
 	ConRO:AbilityBurst(_AspectoftheEagle, _AspectoftheEagle_RDY and not _target_in_melee);
-
+	ConRO:AbilityBurst(_CoordinatedAssault, _CoordinatedAssault_RDY and ConRO:BurstMode(_CoordinatedAssault));
 	ConRO:AbilityBurst(_DeathChakram, _DeathChakram_RDY and ConRO:BurstMode(_DeathChakram));
+	ConRO:AbilityBurst(_PrimalRage, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
+	ConRO:AbilityBurst(_PrimalRageCR, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
 
 --Warnings	
 	ConRO:Warnings("Call your pet!", _CallPet_RDY and not _Pet_summoned);

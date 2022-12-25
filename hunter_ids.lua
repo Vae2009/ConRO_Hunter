@@ -177,17 +177,18 @@ local ConRO_Hunter, ids = ...;
 		TarTrap = 135299,
 	}
 	ids.BM_PetAbility = {
-		Bite = 17253,
-		Claw = 16827,
-		Smack = 49966,
-		ChiJisTranquility = 264028,
-		NaturesGrace = 264266,
-		NetherShock = 264264,
-		SerenityDust = 264055,
-		SonicBlast = 264263,
-		SporeCloud = 264056,
-		SoothingWater = 264262,
-		SpiritShock = 264265,		
+		Bite = {spellID = 17253},
+		Claw = {spellID = 16827},
+		Smack = {spellID = 49966},
+		ChiJisTranquility = {spellID = 264028},
+		NaturesGrace = {spellID = 264266},
+		NetherShock = {spellID = 264264},
+		PrimalRage = {spellID = 264667},
+		SerenityDust = {spellID = 264055},
+		SonicBlast = {spellID = 264263},
+		SporeCloud = {spellID = 264056},
+		SoothingWater = {spellID = 264262},
+		SpiritShock = {spellID = 264265},
 	}
 		
 --Marksmanship
@@ -349,12 +350,18 @@ local ConRO_Hunter, ids = ...;
 		Volley = 260243,
 	}
 	ids.MM_PetAbility = {
-		ChiJisTranquility = 264028,
-		NaturesGrace = 264266,
-		NetherShock = 264264,
-		SerenityDust = 264055,
-		SonicBlast = 264263,
-		SporeCloud = 264056,
+		Bite = {spellID = 17253},
+		Claw = {spellID = 16827},
+		Smack = {spellID = 49966},
+		ChiJisTranquility = {spellID = 264028},
+		NaturesGrace = {spellID = 264266},
+		NetherShock = {spellID = 264264},
+		PrimalRage = {spellID = 264667},
+		SerenityDust = {spellID = 264055},
+		SonicBlast = {spellID = 264263},
+		SporeCloud = {spellID = 264056},
+		SoothingWater = {spellID = 264262},
+		SpiritShock = {spellID = 264265},
 	}
 
 --Survival
@@ -518,14 +525,16 @@ local ConRO_Hunter, ids = ...;
 			VolatileBomb = 271049,
 	}
 	ids.Surv_PetAbility = {
-		Bite = 17253,
-		Claw = 16827,
-		Smack = 49966,
-		ToxicSting = 263858,
-		ChiJisTranquility = 264028,
-		NaturesGrace = 264266,
-		NetherShock = 264264,
-		SerenityDust = 264055,
-		SonicBlast = 264263,
-		SporeCloud = 264056,
+		Bite = {spellID = 17253},
+		Claw = {spellID = 16827},
+		Smack = {spellID = 49966},
+		ChiJisTranquility = {spellID = 264028},
+		NaturesGrace = {spellID = 264266},
+		NetherShock = {spellID = 264264},
+		PrimalRage = {spellID = 264667},
+		SerenityDust = {spellID = 264055},
+		SonicBlast = {spellID = 264263},
+		SporeCloud = {spellID = 264056},
+		SoothingWater = {spellID = 264262},
+		SpiritShock = {spellID = 264265},
 	}
