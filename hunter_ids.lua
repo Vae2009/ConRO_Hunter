@@ -338,6 +338,7 @@ local ConRO_Hunter, ids = ...;
 		TrickShots = 257622,
 		Trueshot = 193526,
 		LockandLoad = 194594,
+		RazorFragments = 388998,
 		SteadyFocus = 193534,
 		LethalShots = 260395,
 		DoubleTap = 260402,
