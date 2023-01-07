@@ -254,12 +254,12 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 	ConRO:AbilityPurge(_ArcaneTorrent, _ArcaneTorrent_RDY and _target_in_melee and ConRO:Purgable());
 	ConRO:AbilityPurge(_TranquilizingShot, _TranquilizingShot_RDY and ConRO:Purgable());
 
-	ConRO:AbilityBurst(_AMurderofCrows, _AMurderofCrows_RDY and ConRO:BurstMode(_AMurderofCrows));
-	ConRO:AbilityBurst(_AspectoftheWild, _AspectoftheWild_RDY and ConRO:BurstMode(_AspectoftheWild));
-	ConRO:AbilityBurst(_BestialWrath, _BestialWrath_RDY and (_AspectoftheWild_BUFF or _AspectoftheWild_CD > 20) and ConRO:BurstMode(_BestialWrath));
-	ConRO:AbilityBurst(_Bloodshed, _Bloodshed_RDY and ConRO:BurstMode(_Bloodshed));
-	ConRO:AbilityBurst(_CalloftheWild, _CalloftheWild_RDY and ConRO:BurstMode(_CalloftheWild));
-	ConRO:AbilityBurst(_DeathChakram, _DeathChakram_RDY and ConRO:BurstMode(_DeathChakram));
+	ConRO:AbilityBurst(_AMurderofCrows, _AMurderofCrows_RDY and _in_combat and ConRO:BurstMode(_AMurderofCrows));
+	ConRO:AbilityBurst(_AspectoftheWild, _AspectoftheWild_RDY and _in_combat and ConRO:BurstMode(_AspectoftheWild));
+	ConRO:AbilityBurst(_BestialWrath, _BestialWrath_RDY and _in_combat and ConRO:BurstMode(_BestialWrath));
+	ConRO:AbilityBurst(_Bloodshed, _Bloodshed_RDY and _in_combat and ConRO:BurstMode(_Bloodshed));
+	ConRO:AbilityBurst(_CalloftheWild, _CalloftheWild_RDY and _in_combat and ConRO:BurstMode(_CalloftheWild));
+	ConRO:AbilityBurst(_DeathChakram, _DeathChakram_RDY and _in_combat and ConRO:BurstMode(_DeathChakram));
 	ConRO:AbilityBurst(_Stampede, _Stampede_RDY and ((_BestialWrath_BUFF and _AspectoftheWild_BUFF) or (_AspectoftheWild_BUFF and _in_combat)) and ConRO:BurstMode(_Stampede));
 	ConRO:AbilityBurst(_PrimalRage, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
 	ConRO:AbilityBurst(_PrimalRageCR, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
