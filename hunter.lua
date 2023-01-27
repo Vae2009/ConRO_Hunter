@@ -515,8 +515,6 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 	local _CounterShot, _CounterShot_RDY = ConRO:AbilityReady(Ability.CounterShot, timeShift);
 	local _DeathChakram, _DeathChakram_RDY = ConRO:AbilityReady(Ability.DeathChakram, timeShift);
 	local _Disengage, _Disengage_RDY = ConRO:AbilityReady(Ability.Disengage, timeShift);
-	local _DoubleTap, _DoubleTap_RDY = ConRO:AbilityReady(Ability.DoubleTap, timeShift);
-		local _DoubleTap_BUFF = ConRO:Aura(Buff.DoubleTap, timeShift);
 	local _ExplosiveShot, _ExplosiveShot_RDY = ConRO:AbilityReady(Ability.ExplosiveShot, timeShift);
 		local _ExplosiveShot_DEBUFF = ConRO:TargetAura(Debuff.ExplosiveShot);
 	local _Flare, _Flare_RDY = ConRO:AbilityReady(Ability.Flare, timeShift);
@@ -533,6 +531,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 	local _PrimalRageCR = ConRO:AbilityReady(Ability.CommandPet.PrimalRage, timeShift);
 	local _PrimalRage, _PrimalRage_RDY = ConRO:AbilityReady(PetAbility.PrimalRage, timeShift, 'pet');
 	local _RapidFire, _RapidFire_RDY = ConRO:AbilityReady(Ability.RapidFire, timeShift);
+	local _Salvo, _Salvo_RDY = ConRO:AbilityReady(Ability.Salvo, timeShift);
 	local _SerpentSting, _SerpentSting_RDY = ConRO:AbilityReady(Ability.SerpentSting, timeShift);
 		local _SerpentSting_DEBUFF = ConRO:TargetAura(Debuff.SerpentSting, timeShift + 3);
 	local _Stampede, _Stampede_RDY = ConRO:AbilityReady(Ability.Stampede, timeShift);
@@ -589,7 +588,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 	ConRO:AbilityMovement(_Disengage, _Disengage_RDY and _target_in_melee);
 
 	ConRO:AbilityBurst(_Trueshot, _Trueshot_RDY and _AimedShot_CHARGES >= 1 and ConRO:BurstMode(_Trueshot));
-	ConRO:AbilityBurst(_DoubleTap, _DoubleTap_RDY and not _RapidFire_RDY and _AimedShot_RDY and ConRO:BurstMode(_DoubleTap));
+	ConRO:AbilityBurst(_Salvo, _Salvo_RDY and ConRO:BurstMode(_Salvo));
 	ConRO:AbilityBurst(_Volley, _Volley_RDY and (_RapidFire_RDY or _AimedShot_RDY) and ConRO:BurstMode(_Volley));
 	ConRO:AbilityBurst(_Stampede, _Stampede_RDY and ConRO:BurstMode(_Stampede));
 	ConRO:AbilityBurst(_DeathChakram, _DeathChakram_RDY and ConRO:BurstMode(_DeathChakram));
@@ -601,38 +600,19 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 --Rotations
 	for i = 1, 2, 1 do
 		if not _in_combat then
-			if _SteadyShot_RDY and tChosen[Passive.SteadyFocus.talentID] and (not _SteadyFocus_BUFF and (currentSpell ~= _SteadyShot or ConRO.lastSpellId ~= _SteadyShot)) then
-				tinsert(ConRO.SuggestedSpells, _SteadyShot);
-			end
-
-			if _SteadyShot_RDY and tChosen[Passive.SteadyFocus.talentID] and (not _SteadyFocus_BUFF and (currentSpell == _SteadyShot or ConRO.lastSpellId == _SteadyShot)) then
-				tinsert(ConRO.SuggestedSpells, _SteadyShot);
-				_SteadyShot_RDY = false;
-			end
-
-			if _DeathChakram_RDY and ConRO:FullMode(_DeathChakram) then
-				tinsert(ConRO.SuggestedSpells, _DeathChakram);
-				_DeathChakram_RDY = false;
-			end
-
-			if _Volley_RDY and ConRO:FullMode(_Volley) then
-				tinsert(ConRO.SuggestedSpells, _Volley);
-				_Volley_RDY = false;
-			end
-
-			if _Trueshot_RDY and _AimedShot_CHARGES >= 1 and ConRO:FullMode(_Trueshot) then
-				tinsert(ConRO.SuggestedSpells, _Trueshot);
-				_Trueshot_RDY = false;
-			end
-
 			if _AimedShot_RDY and _AimedShot_CHARGES >= 1 and currentSpell ~= _AimedShot then
 				tinsert(ConRO.SuggestedSpells, _AimedShot);
 				_AimedShot_CHARGES = _AimedShot_CHARGES - 1;
 				_PreciseShots_COUNT = _PreciseShots_COUNT + 1;
 			end
+
+			if _SteadyShot_RDY and tChosen[Passive.SteadyFocus.talentID] and not _SteadyFocus_BUFF and currentSpell ~= _SteadyShot then
+				tinsert(ConRO.SuggestedSpells, _SteadyShot);
+				_SteadyShot_RDY = false;
+			end
 		end
 
-		if _SteadyShot_RDY and tChosen[Passive.SteadyFocus.talentID] and (currentSpell == _SteadyShot and ConRO.lastSpellId ~= _SteadyShot) and _SteadyFocus_DUR <= 5 then
+		if _SteadyShot_RDY and tChosen[Passive.SteadyFocus.talentID] and (currentSpell == _SteadyShot and ConRO.lastSpellId ~= _SteadyShot) and (_SteadyFocus_DUR <= 5 or not _SteadyFocus_BUFF) then
 			tinsert(ConRO.SuggestedSpells, _SteadyShot);
 			_SteadyShot_RDY = false;
 		end
@@ -645,28 +625,6 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 			end
 		end
 
-		if _DoubleTap_RDY and ((_AimedShot_RDY and _AimedShot_CHARGES >= 1) or _RapidFire_RDY) and ConRO:FullMode(_DoubleTap) then
-			tinsert(ConRO.SuggestedSpells, _DoubleTap);
-			_DoubleTap_RDY = false;
-		end
-
-		if _DoubleTap_BUFF then
-			if _MultiShot_RDY and (not _TrickShots_BUFF or currentSpell == _AimedShot or select(2, ConRO:EndChannel()) == _RapidFire) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-				tinsert(ConRO.SuggestedSpells, _MultiShot);
-				_TrickShots_BUFF = true;
-				_PreciseShots_COUNT = _PreciseShots_COUNT - 1;
-			end
-			if _AimedShot_RDY and _AimedShot_CHARGES >= 1 and currentSpell ~= _AimedShot and tChosen[Passive.CarefulAim.talentID] and _Target_Percent_Health > 70 then
-				tinsert(ConRO.SuggestedSpells, _AimedShot);
-				_AimedShot_CHARGES = _AimedShot_CHARGES - 1;
-				_PreciseShots_COUNT = _PreciseShots_COUNT + 1;
-			elseif _RapidFire_RDY then
-				tinsert(ConRO.SuggestedSpells, _RapidFire);
-				_RapidFire_RDY = false;
-			end
-			_DoubleTap_BUFF = false;
-		end
-
 		if _DeathChakram_RDY and ConRO:FullMode(_DeathChakram) then
 			tinsert(ConRO.SuggestedSpells, _DeathChakram);
 			_DeathChakram_RDY = false;
@@ -675,6 +633,11 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 		if _Stampede_RDY and ConRO:FullMode(_Stampede) then
 			tinsert(ConRO.SuggestedSpells, _Stampede);
 			_Stampede_RDY = false;
+		end
+
+		if _Salvo_RDY and not _ExplosiveShot_DEBUFF and ConRO:FullMode(_Salvo) then
+			tinsert(ConRO.SuggestedSpells, _Salvo);
+			_Salvo_RDY = false;
 		end
 
 		if _Volley_RDY and ConRO:FullMode(_Volley) then
@@ -752,17 +715,15 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 			_SteadyShot_RDY = false;
 		end
 
-		if ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-			if _MultiShot_RDY and (_PreciseShots_BUFF or currentSpell == _AimedShot or _Focus >= 55) then
-				tinsert(ConRO.SuggestedSpells, _MultiShot);
-				_Focus = _Focus - 40;
-			end
-		else
-			if _ArcaneShot_RDY and (_PreciseShots_COUNT >= 1 or currentSpell == _AimedShot or _Focus >= 55) then
-				tinsert(ConRO.SuggestedSpells, _ArcaneShot);
-				_Focus = _Focus - _ArcaneShot_COST;
-				_PreciseShots_COUNT = _PreciseShots_COUNT - 1;
-			end
+		if _MultiShot_RDY and (_PreciseShots_BUFF or currentSpell == _AimedShot or _Focus >= 55) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+			tinsert(ConRO.SuggestedSpells, _MultiShot);
+			_Focus = _Focus - 40;
+		end
+
+		if _ArcaneShot_RDY and (_PreciseShots_COUNT >= 1 or currentSpell == _AimedShot or _Focus >= 55) then
+			tinsert(ConRO.SuggestedSpells, _ArcaneShot);
+			_Focus = _Focus - _ArcaneShot_COST;
+			_PreciseShots_COUNT = _PreciseShots_COUNT - 1;
 		end
 
 		if _SteadyShot_RDY then
