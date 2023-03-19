@@ -509,8 +509,10 @@ local ConRO_Hunter, ids = ...;
 	ids.Surv_Buff = {
 		AspectoftheEagle = 186289,
 		CoordinatedAssault = 266779,
+		DeadlyDuo = 397568,
 		MongooseFury = 259388,
 		Spearhead = 360966,
+		TermsofEngagement = 262898,
 		TipoftheSpear = 260286,
 		VipersVenom = 268552,
 	}
