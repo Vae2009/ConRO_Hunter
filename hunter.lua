@@ -382,7 +382,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 			_KillCommand_CHARGES = _KillCommand_CHARGES - 1;
 		end
 
-		if _BarbedShot_RDY and ((_BarbedShot_CHARGES >= _BarbedShot_MaxCHARGES - 1 and _BarbedShot_CCD <= 6) or (_BarbedShot_CHARGES >= 1 and _BestialWrath_CD <= 20 and tChosen[d.ScentofBlood.talentID]) or _CalloftheWild_BUFF) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 2) or ConRO_SingleButton:IsVisible()) then
+		if _BarbedShot_RDY and ((_BarbedShot_CHARGES >= _BarbedShot_MaxCHARGES - 1 and _BarbedShot_CCD <= 6) or (_BarbedShot_CHARGES >= 1 and _BestialWrath_CD <= 20 and tChosen[Ability.ScentofBlood.talentID]) or _CalloftheWild_BUFF) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 2) or ConRO_SingleButton:IsVisible()) then
 			tinsert(ConRO.SuggestedSpells, _BarbedShot);
 			_BarbedShot_CHARGES = _BarbedShot_CHARGES - 1;
 		end
