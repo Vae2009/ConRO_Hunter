@@ -126,7 +126,7 @@ function ConRO.Hunter.Under10(_, timeShift, currentSpell, gcd, tChosen, pvpChose
 --Conditions
 	local _is_moving 																					= ConRO:PlayerSpeed();
 	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
-	local _target_in_10yrds 																			= CheckInteractDistance("target", 3);
+	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
 
 --Warnings
 
@@ -164,7 +164,7 @@ function ConRO.Hunter.Under10Def(_, timeShift, currentSpell, gcd, tChosen, pvpCh
 --Conditions
 	local _is_moving 																					= ConRO:PlayerSpeed();
 	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
-	local _target_in_10yrds 																			= CheckInteractDistance("target", 3);
+	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
 
 --Warnings
 
@@ -447,7 +447,7 @@ function ConRO.Hunter.BeastMasteryDef(_, timeShift, currentSpell, gcd, tChosen, 
 --Conditions
 	local _is_moving = ConRO:PlayerSpeed();
 	local _enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
-	local _target_in_10yrds = CheckInteractDistance("target", 3);
+	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
 
 	local _Pet_summoned = ConRO:CallPet();
 	local _Pet_assist = ConRO:PetAssist();
@@ -754,7 +754,7 @@ function ConRO.Hunter.MarksmanshipDef(_, timeShift, currentSpell, gcd, tChosen, 
 --Conditions
 	local _is_moving = ConRO:PlayerSpeed();
 	local _enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
-	local _target_in_10yrds = CheckInteractDistance("target", 3);
+	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
 
 	local _Pet_summoned = ConRO:CallPet();
 	local _Pet_assist = ConRO:PetAssist();
@@ -865,7 +865,7 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 --Conditions
 	local _is_moving 																					= ConRO:PlayerSpeed();
 	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
-	local _target_in_10yrds 																			= CheckInteractDistance("target", 3);
+	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
 	local _can_execute																					= _Target_Percent_Health <= 20;
 
 	local _Pet_summoned 																				= ConRO:CallPet();
@@ -1106,35 +1106,35 @@ function ConRO.Hunter.SurvivalDef(_, timeShift, currentSpell, gcd, tChosen, pvpC
 	wipe(ConRO.SuggestedDefSpells)
 	local Racial, Ability, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.Surv_Ability, ids.Surv_Form, ids.Surv_Buff, ids.Surv_Debuff, ids.Surv_PetAbility, ids.Surv_PvPTalent, ids.Glyph;
 --Info			
-	local _Player_Level																					= UnitLevel("player");
-	local _Player_Percent_Health 																		= ConRO:PercentHealth('player');
-	local _is_PvP																						= ConRO:IsPvP();
-	local _in_combat 																					= UnitAffectingCombat('player');
-	local _party_size																					= GetNumGroupMembers();
+	local _Player_Level = UnitLevel("player");
+	local _Player_Percent_Health = ConRO:PercentHealth('player');
+	local _is_PvP = ConRO:IsPvP();
+	local _in_combat = UnitAffectingCombat('player');
+	local _party_size = GetNumGroupMembers();
 
-	local _is_PC																						= UnitPlayerControlled("target");
-	local _is_Enemy 																					= ConRO:TarHostile();
-	local _Target_Health 																				= UnitHealth('target');
-	local _Target_Percent_Health 																		= ConRO:PercentHealth('target');
+	local _is_PC = UnitPlayerControlled("target");
+	local _is_Enemy = ConRO:TarHostile();
+	local _Target_Health = UnitHealth('target');
+	local _Target_Percent_Health = ConRO:PercentHealth('target');
 
 --Resources	
-	local _Focus, _Focus_Max																			= ConRO:PlayerPower('Focus');
-	local _Heroism_BUFF, _Sated_DEBUFF																	= ConRO:Heroism();
+	local _Focus, _Focus_Max = ConRO:PlayerPower('Focus');
+	local _Heroism_BUFF, _Sated_DEBUFF = ConRO:Heroism();
 
 --Abilities
-	local _Exhilaration, _Exhilaration_RDY					 											= ConRO:AbilityReady(Ability.Exhilaration, timeShift);
-	local _AspectoftheTurtle, _AspectoftheTurtle_RDY		 											= ConRO:AbilityReady(Ability.AspectoftheTurtle, timeShift);
-	local _MendPet, _MendPet_RDY																		= ConRO:AbilityReady(Ability.PetUtility.MendPet, timeShift);
-	local _FeedPet, _FeedPet_RDY																		= ConRO:AbilityReady(Ability.PetUtility.FeedPet, timeShift);
+	local _Exhilaration, _Exhilaration_RDY = ConRO:AbilityReady(Ability.Exhilaration, timeShift);
+	local _AspectoftheTurtle, _AspectoftheTurtle_RDY = ConRO:AbilityReady(Ability.AspectoftheTurtle, timeShift);
+	local _MendPet, _MendPet_RDY = ConRO:AbilityReady(Ability.PetUtility.MendPet, timeShift);
+	local _FeedPet, _FeedPet_RDY = ConRO:AbilityReady(Ability.PetUtility.FeedPet, timeShift);
 
 --Conditions
-	local _is_moving 																					= ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
-	local _target_in_10yrds 																			= CheckInteractDistance("target", 3);
+	local _is_moving = ConRO:PlayerSpeed();
+	local _enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
+	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
 
-	local _Pet_summoned 																				= ConRO:CallPet();
-	local _Pet_assist 																					= ConRO:PetAssist();
-	local _Pet_Percent_Health																			= ConRO:PercentHealth('pet');
+	local _Pet_summoned = ConRO:CallPet();
+	local _Pet_assist = ConRO:PetAssist();
+	local _Pet_Percent_Health = ConRO:PercentHealth('pet');
 
 --Rotations	
 	if _FeedPet_RDY and _Pet_summoned and not _in_combat and _Pet_Percent_Health <= 60 then
