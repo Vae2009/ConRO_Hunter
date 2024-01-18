@@ -98,35 +98,70 @@ function ConRO.Hunter.Disabled(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 	return nil;
 end
 
-function ConRO.Hunter.Under10(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
-	wipe(ConRO.SuggestedSpells)
-	local Racial, Ability, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.Hunter_Ability, ids.Hunter_Form, ids.Hunter_Buff, ids.Hunter_Debuff, ids.Hunter_PetAbility, ids.Hunter_PvPTalent, ids.Glyph;
---Info	
-	local _Player_Level = UnitLevel("player");
-	local _Player_Percent_Health 																		= ConRO:PercentHealth('player');
-	local _is_PvP = ConRO:IsPvP();
-	local _in_combat 																					= UnitAffectingCombat('player');
-	local _party_size																					= GetNumGroupMembers();
-
-	local _is_PC																						= UnitPlayerControlled("target");
-	local _is_Enemy 																					= ConRO:TarHostile();
-	local _Target_Health 																				= UnitHealth('target');
-	local _Target_Percent_Health 																		= ConRO:PercentHealth('target');
+--Info
+local _Player_Level = UnitLevel("player");
+local _Player_Percent_Health = ConRO:PercentHealth('player');
+local _is_PvP = ConRO:IsPvP();
+local _in_combat = UnitAffectingCombat('player');
+local _party_size = GetNumGroupMembers();
+local _is_PC = UnitPlayerControlled("target");
+local _is_Enemy = ConRO:TarHostile();
+local _Target_Health = UnitHealth('target');
+local _Target_Percent_Health = ConRO:PercentHealth('target');
 
 --Resources
+local _Focus, _Focus_Max = ConRO:PlayerPower('Focus');
+local _Heroism_BUFF, _Sated_DEBUFF = ConRO:Heroism();
+
+--Conditions
+local _is_moving = ConRO:PlayerSpeed();
+local _enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
+local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
+local _enemies_in_25yrds, _target_in_25yrds = ConRO:Targets("25");
+local _enemies_in_40yrds, _target_in_40yrds = ConRO:Targets("40");
+local _can_Execute = _Target_Percent_Health < 20;
 
 --Racials
-	local _AncestralCall, _AncestralCall_RDY															= ConRO:AbilityReady(Racial.AncestralCall, timeShift);
-	local _ArcanePulse, _ArcanePulse_RDY																= ConRO:AbilityReady(Racial.ArcanePulse, timeShift);
-	local _Berserking, _Berserking_RDY																	= ConRO:AbilityReady(Racial.Berserking, timeShift);
-	local _ArcaneTorrent, _ArcaneTorrent_RDY															= ConRO:AbilityReady(Racial.ArcaneTorrent, timeShift);
+local _AncestralCall, _AncestralCall_RDY = _, _;
+local _ArcanePulse, _ArcanePulse_RDY = _, _;
+local _Berserking, _Berserking_RDY = _, _;
+local _ArcaneTorrent, _ArcaneTorrent_RDY = _, _;
+
+function ConRO:Stats()
+	_Player_Level = UnitLevel("player");
+	_Player_Percent_Health = ConRO:PercentHealth('player');
+	_is_PvP = ConRO:IsPvP();
+	_in_combat = UnitAffectingCombat('player');
+	_party_size = GetNumGroupMembers();
+	_is_PC = UnitPlayerControlled("target");
+	_is_Enemy = ConRO:TarHostile();
+	_Target_Health = UnitHealth('target');
+	_Target_Percent_Health = ConRO:PercentHealth('target');
+
+	_Focus, _Focus_Max = ConRO:PlayerPower('Focus');
+	_Heroism_BUFF, _Sated_DEBUFF = ConRO:Heroism();
+
+	_is_moving = ConRO:PlayerSpeed();
+	_enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
+	_enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
+	_enemies_in_25yrds, _target_in_25yrds = ConRO:Targets("25");
+	_enemies_in_40yrds, _target_in_40yrds = ConRO:Targets("40");
+	_can_Execute = _Target_Percent_Health < 20;
+
+	_AncestralCall, _AncestralCall_RDY = ConRO:AbilityReady(ids.Racial.AncestralCall, timeShift);
+	_ArcanePulse, _ArcanePulse_RDY = ConRO:AbilityReady(ids.Racial.ArcanePulse, timeShift);
+	_Berserking, _Berserking_RDY = ConRO:AbilityReady(ids.Racial.Berserking, timeShift);
+	_ArcaneTorrent, _ArcaneTorrent_RDY = ConRO:AbilityReady(ids.Racial.ArcaneTorrent, timeShift);
+end
+
+function ConRO.Hunter.Under10(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
+	wipe(ConRO.SuggestedSpells);
+	ConRO:Stats();
+	local Ability, Form, Buff, Debuff, PetAbility, PvPTalent = ids.Hunter_Ability, ids.Hunter_Form, ids.Hunter_Buff, ids.Hunter_Debuff, ids.Hunter_PetAbility, ids.Hunter_PvPTalent;
 
 --Abilities
 
 --Conditions
-	local _is_moving 																					= ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
-	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
 
 --Warnings
 
@@ -137,34 +172,13 @@ return nil;
 end
 
 function ConRO.Hunter.Under10Def(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
-	wipe(ConRO.SuggestedDefSpells)
-	local Racial, Ability, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.Hunter_Ability, ids.Hunter_Form, ids.Hunter_Buff, ids.Hunter_Debuff, ids.Hunter_PetAbility, ids.Hunter_PvPTalent, ids.Glyph;
---Info	
-	local _Player_Level																					= UnitLevel("player");
-	local _Player_Percent_Health 																		= ConRO:PercentHealth('player');
-	local _is_PvP																						= ConRO:IsPvP();
-	local _in_combat 																					= UnitAffectingCombat('player');
-	local _party_size																					= GetNumGroupMembers();
-
-	local _is_PC																						= UnitPlayerControlled("target");
-	local _is_Enemy 																					= ConRO:TarHostile();
-	local _Target_Health 																				= UnitHealth('target');
-	local _Target_Percent_Health 																		= ConRO:PercentHealth('target');
-
---Resources
-
---Racials
-	local _AncestralCall, _AncestralCall_RDY															= ConRO:AbilityReady(Racial.AncestralCall, timeShift);
-	local _ArcanePulse, _ArcanePulse_RDY																= ConRO:AbilityReady(Racial.ArcanePulse, timeShift);
-	local _Berserking, _Berserking_RDY																	= ConRO:AbilityReady(Racial.Berserking, timeShift);
-	local _ArcaneTorrent, _ArcaneTorrent_RDY															= ConRO:AbilityReady(Racial.ArcaneTorrent, timeShift);
+	wipe(ConRO.SuggestedDefSpells);
+	ConRO:Stats();
+	local Ability, Form, Buff, Debuff, PetAbility, PvPTalent = ids.Hunter_Ability, ids.Hunter_Form, ids.Hunter_Buff, ids.Hunter_Debuff, ids.Hunter_PetAbility, ids.Hunter_PvPTalent;
 
 --Abilities
 
 --Conditions
-	local _is_moving 																					= ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
-	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
 
 --Warnings
 
@@ -174,29 +188,9 @@ return nil;
 end
 
 function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
-	wipe(ConRO.SuggestedSpells)
-	local Racial, Ability, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.BM_Ability, ids.BM_Form, ids.BM_Buff, ids.BM_Debuff, ids.BM_PetAbility, ids.BM_PvPTalent, ids.Glyph;
---Info	
-	local _Player_Level = UnitLevel("player");
-	local _Player_Percent_Health = ConRO:PercentHealth('player');
-	local _is_PvP = ConRO:IsPvP();
-	local _in_combat = UnitAffectingCombat('player');
-	local _party_size = GetNumGroupMembers();
-
-	local _is_PC = UnitPlayerControlled("target");
-	local _is_Enemy = ConRO:TarHostile();
-	local _Target_Health = UnitHealth('target');
-	local _Target_Percent_Health = ConRO:PercentHealth('target');
-
---Resources	
-	local _Focus, _Focus_Max = ConRO:PlayerPower('Focus');
-	local _Heroism_BUFF, _Sated_DEBUFF = ConRO:Heroism();
-
---Racials
-	local _AncestralCall, _AncestralCall_RDY = ConRO:AbilityReady(Racial.AncestralCall, timeShift);
-	local _ArcanePulse, _ArcanePulse_RDY = ConRO:AbilityReady(Racial.ArcanePulse, timeShift);
-	local _Berserking, _Berserking_RDY = ConRO:AbilityReady(Racial.Berserking, timeShift);
-	local _ArcaneTorrent, _ArcaneTorrent_RDY = ConRO:AbilityReady(Racial.ArcaneTorrent, timeShift);
+	wipe(ConRO.SuggestedSpells);
+	ConRO:Stats();
+	local Ability, Form, Buff, Debuff, PetAbility, PvPTalent = ids.BM_Ability, ids.BM_Form, ids.BM_Buff, ids.BM_Debuff, ids.BM_PetAbility, ids.BM_PvPTalent;
 
 --Abilities	
 	local _AMurderofCrows, _AMurderofCrows_RDY = ConRO:AbilityReady(Ability.AMurderofCrows, timeShift);
@@ -238,10 +232,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 	local _WailingArrow, _WailingArrow_RDY = ConRO:AbilityReady(Ability.WailingArrow, timeShift);
 
 --Conditions
-	local _is_moving = ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
 	local _enemies_in_range, _target_in_range = ConRO:Targets(Ability.ArcaneShot);
-	local _can_execute = _Target_Percent_Health <= 20;
 
 	local _Pet_summoned = ConRO:CallPet();
 	local _Pet_assist = ConRO:PetAssist();
@@ -402,7 +393,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 			_Barrage_RDY = false;
 		end
 
-		if _KillShot_RDY and (_can_execute or _HuntersPrey_BUFF) then
+		if _KillShot_RDY and (_can_Execute or _HuntersPrey_BUFF) then
 			tinsert(ConRO.SuggestedSpells, _KillShot);
 			_KillShot_RDY = false;
 		end
@@ -420,23 +411,9 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 end
 
 function ConRO.Hunter.BeastMasteryDef(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
-	wipe(ConRO.SuggestedDefSpells)
-	local Racial, Ability, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.BM_Ability, ids.BM_Form, ids.BM_Buff, ids.BM_Debuff, ids.BM_PetAbility, ids.BM_PvPTalent, ids.Glyph;
---Info			
-	local _Player_Level = UnitLevel("player");
-	local _Player_Percent_Health = ConRO:PercentHealth('player');
-	local _is_PvP = ConRO:IsPvP();
-	local _in_combat = UnitAffectingCombat('player');
-	local _party_size = GetNumGroupMembers();
-
-	local _is_PC = UnitPlayerControlled("target");
-	local _is_Enemy = ConRO:TarHostile();
-	local _Target_Health = UnitHealth('target');
-	local _Target_Percent_Health = ConRO:PercentHealth('target');
-
---Resources	
-	local _Focus, _Focus_Max = ConRO:PlayerPower('Focus');
-	local _Heroism_BUFF, _Sated_DEBUFF = ConRO:Heroism();
+	wipe(ConRO.SuggestedDefSpells);
+	ConRO:Stats();
+	local Ability, Form, Buff, Debuff, PetAbility, PvPTalent = ids.BM_Ability, ids.BM_Form, ids.BM_Buff, ids.BM_Debuff, ids.BM_PetAbility, ids.BM_PvPTalent;
 
 --Abilities
 	local _Exhilaration, _Exhilaration_RDY = ConRO:AbilityReady(Ability.Exhilaration, timeShift);
@@ -445,10 +422,6 @@ function ConRO.Hunter.BeastMasteryDef(_, timeShift, currentSpell, gcd, tChosen, 
 	local _FeedPet, _FeedPet_RDY = ConRO:AbilityReady(Ability.PetUtility.FeedPet, timeShift);
 
 --Conditions
-	local _is_moving = ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
-	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
-
 	local _Pet_summoned = ConRO:CallPet();
 	local _Pet_assist = ConRO:PetAssist();
 	local _Pet_Percent_Health = ConRO:PercentHealth('pet');
@@ -473,29 +446,9 @@ function ConRO.Hunter.BeastMasteryDef(_, timeShift, currentSpell, gcd, tChosen, 
 end
 
 function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
-	wipe(ConRO.SuggestedSpells)
-	local Racial, Ability, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.MM_Ability, ids.MM_Form, ids.MM_Buff, ids.MM_Debuff, ids.MM_PetAbility, ids.MM_PvPTalent, ids.Glyph;
---Info
-	local _Player_Level = UnitLevel("player");
-	local _Player_Percent_Health = ConRO:PercentHealth('player');
-	local _is_PvP = ConRO:IsPvP();
-	local _in_combat = UnitAffectingCombat('player');
-	local _party_size = GetNumGroupMembers();
-
-	local _is_PC = UnitPlayerControlled("target");
-	local _is_Enemy = ConRO:TarHostile();
-	local _Target_Health = UnitHealth('target');
-	local _Target_Percent_Health = ConRO:PercentHealth('target');
-
---Resources	
-	local _Focus, _Focus_Max = ConRO:PlayerPower('Focus');
-	local _Heroism_BUFF, _Sated_DEBUFF = ConRO:Heroism();
-
---Racials
-	local _AncestralCall, _AncestralCall_RDY = ConRO:AbilityReady(Racial.AncestralCall, timeShift);
-	local _ArcanePulse, _ArcanePulse_RDY = ConRO:AbilityReady(Racial.ArcanePulse, timeShift);
-	local _Berserking, _Berserking_RDY = ConRO:AbilityReady(Racial.Berserking, timeShift);
-	local _ArcaneTorrent, _ArcaneTorrent_RDY = ConRO:AbilityReady(Racial.ArcaneTorrent, timeShift);
+	wipe(ConRO.SuggestedSpells);
+	ConRO:Stats();
+	local Ability, Form, Buff, Debuff, PetAbility, PvPTalent = ids.MM_Ability, ids.MM_Form, ids.MM_Buff, ids.MM_Debuff, ids.MM_PetAbility, ids.MM_PvPTalent;
 
 --Abilities	
 	local _AimedShot, _AimedShot_RDY = ConRO:AbilityReady(Ability.AimedShot, timeShift);
@@ -541,10 +494,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 
 
 --Conditions
-	local _is_moving = ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
 	local _enemies_in_range, _target_in_range = ConRO:Targets(Ability.ArcaneShot);
-	local _can_execute = _Target_Percent_Health <= 20;
 
 	local _Pet_summoned = ConRO:CallPet();
 	local _Pet_assist = ConRO:PetAssist();
@@ -608,7 +558,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 			_SteadyShot_RDY = false;
 		end
 
-		if _KillShot_RDY and _KillShot_CHARGES >= 1 and (_can_execute or _Deathblow_BUFF) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible() or _RazorFragments_BUFF) then
+		if _KillShot_RDY and _KillShot_CHARGES >= 1 and (_can_Execute or _Deathblow_BUFF) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible() or _RazorFragments_BUFF) then
 			tinsert(ConRO.SuggestedSpells, _KillShot);
 			_KillShot_CHARGES = _KillShot_CHARGES - 1;
 			if _Deathblow_BUFF then
@@ -688,7 +638,7 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 			_SerpentSting_DEBUFF = true;
 		end
 
-		if _KillShot_RDY and _KillShot_CHARGES >= 1 and (_can_execute or _Deathblow_BUFF) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+		if _KillShot_RDY and _KillShot_CHARGES >= 1 and (_can_Execute or _Deathblow_BUFF) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
 			tinsert(ConRO.SuggestedSpells, _KillShot);
 			_KillShot_CHARGES = _KillShot_CHARGES - 1;
 			if _Deathblow_BUFF then
@@ -725,23 +675,9 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 end
 
 function ConRO.Hunter.MarksmanshipDef(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
-	wipe(ConRO.SuggestedDefSpells)
-	local Racial, Ability, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.MM_Ability, ids.MM_Form, ids.MM_Buff, ids.MM_Debuff, ids.MM_PetAbility, ids.MM_PvPTalent, ids.Glyph;
---Info
-	local _Player_Level = UnitLevel("player");
-	local _Player_Percent_Health = ConRO:PercentHealth('player');
-	local _is_PvP = ConRO:IsPvP();
-	local _in_combat = UnitAffectingCombat('player');
-	local _party_size = GetNumGroupMembers();
-
-	local _is_PC = UnitPlayerControlled("target");
-	local _is_Enemy = ConRO:TarHostile();
-	local _Target_Health = UnitHealth('target');
-	local _Target_Percent_Health = ConRO:PercentHealth('target');
-
---Resources	
-	local _Focus, _Focus_Max = ConRO:PlayerPower('Focus');
-	local _Heroism_BUFF, _Sated_DEBUFF = ConRO:Heroism();
+	wipe(ConRO.SuggestedDefSpells);
+	ConRO:Stats();
+	local Ability, Form, Buff, Debuff, PetAbility, PvPTalent = ids.MM_Ability, ids.MM_Form, ids.MM_Buff, ids.MM_Debuff, ids.MM_PetAbility, ids.MM_PvPTalent;
 
 --Abilities	
 	local _Exhilaration, _Exhilaration_RDY = ConRO:AbilityReady(Ability.Exhilaration, timeShift);
@@ -752,10 +688,6 @@ function ConRO.Hunter.MarksmanshipDef(_, timeShift, currentSpell, gcd, tChosen, 
 	local _FeedPet, _FeedPet_RDY = ConRO:AbilityReady(Ability.PetUtility.FeedPet, timeShift);
 
 --Conditions
-	local _is_moving = ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
-	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
-
 	local _Pet_summoned = ConRO:CallPet();
 	local _Pet_assist = ConRO:PetAssist();
 	local _Pet_Percent_Health = ConRO:PercentHealth('pet');
@@ -784,29 +716,9 @@ function ConRO.Hunter.MarksmanshipDef(_, timeShift, currentSpell, gcd, tChosen, 
 end
 
 function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
-	wipe(ConRO.SuggestedSpells)
-	local Racial, Ability, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.Surv_Ability, ids.Surv_Form, ids.Surv_Buff, ids.Surv_Debuff, ids.Surv_PetAbility, ids.Surv_PvPTalent, ids.Glyph;
---Info		
-	local _Player_Level = UnitLevel("player");
-	local _Player_Percent_Health = ConRO:PercentHealth('player');
-	local _is_PvP = ConRO:IsPvP();
-	local _in_combat = UnitAffectingCombat('player');
-	local _party_size = GetNumGroupMembers();
-
-	local _is_PC = UnitPlayerControlled("target");
-	local _is_Enemy = ConRO:TarHostile();
-	local _Target_Health = UnitHealth('target');
-	local _Target_Percent_Health = ConRO:PercentHealth('target');
-
---Resources	
-	local _Focus, _Focus_Max = ConRO:PlayerPower('Focus');
-	local _Heroism_BUFF, _Sated_DEBUFF = ConRO:Heroism();
-
---Racials
-	local _AncestralCall, _AncestralCall_RDY = ConRO:AbilityReady(Racial.AncestralCall, timeShift);
-	local _ArcanePulse, _ArcanePulse_RDY = ConRO:AbilityReady(Racial.ArcanePulse, timeShift);
-	local _Berserking, _Berserking_RDY = ConRO:AbilityReady(Racial.Berserking, timeShift);
-	local _ArcaneTorrent, _ArcaneTorrent_RDY = ConRO:AbilityReady(Racial.ArcaneTorrent, timeShift);
+	wipe(ConRO.SuggestedSpells);
+	ConRO:Stats();
+	local Ability, Form, Buff, Debuff, PetAbility, PvPTalent = ids.Surv_Ability, ids.Surv_Form, ids.Surv_Buff, ids.Surv_Debuff, ids.Surv_PetAbility, ids.Surv_PvPTalent;
 
 --Abilities	
 	local _AspectoftheEagle, _AspectoftheEagle_RDY = ConRO:AbilityReady(Ability.AspectoftheEagle, timeShift);
@@ -818,7 +730,9 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 	local _Carve, _Carve_RDY = ConRO:AbilityReady(Ability.Carve, timeShift);
 	local _CoordinatedAssault, _CoordinatedAssault_RDY = ConRO:AbilityReady(Ability.CoordinatedAssault, timeShift);
 		local _CoordinatedAssault_BUFF = ConRO:Aura(Buff.CoordinatedAssault, timeShift);
+	local _DeathChakram, _DeathChakram_RDY = ConRO:AbilityReady(Ability.DeathChakram, timeShift);
 	local _ExplosiveShot, _ExplosiveShot_RDY = ConRO:AbilityReady(Ability.ExplosiveShot, timeShift);
+	local _FlankingStrike, _FlankingStrike_RDY = ConRO:AbilityReady(Ability.FlankingStrike, timeShift);
 	local _Flare, _Flare_RDY = ConRO:AbilityReady(Ability.Flare, timeShift);
 	local _FreezingTrap, _FreezingTrap_RDY = ConRO:AbilityReady(Ability.FreezingTrap, timeShift);
 	local _FuryoftheEagle, _FuryoftheEagle_RDY = ConRO:AbilityReady(Ability.FuryoftheEagle, timeShift);
@@ -829,6 +743,8 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 		local _KillCommand_CHARGES, _, _KillCommand_CCD = ConRO:SpellCharges(_KillCommand);
 		local _, _TipoftheSpear_COUNT = ConRO:Aura(Buff.TipoftheSpear, timeShift);
 	local _KillShot, _KillShot_RDY = ConRO:AbilityReady(Ability.KillShot, timeShift);
+	local _MongooseBite, _MongooseBite_RDY = ConRO:AbilityReady(Ability.MongooseBite, timeShift);
+		local _MongooseFury_BUFF, _MongooseFury_COUNT, _MongooseFury_DUR = ConRO:Aura(Buff.MongooseFury, timeShift);
 	local _Muzzle, _Muzzle_RDY = ConRO:AbilityReady(Ability.Muzzle, timeShift);
 	local _PrimalRageCR = ConRO:AbilityReady(Ability.CommandPet.PrimalRage, timeShift);
 	local _PrimalRage, _PrimalRage_RDY = ConRO:AbilityReady(PetAbility.PrimalRage, timeShift, 'pet');
@@ -837,6 +753,7 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 	local _SerpentSting, _SerpentSting_RDY = ConRO:AbilityReady(Ability.SerpentSting, timeShift);
 		local _SerpentSting_DEBUFF, _, _SerpentSting_DUR = ConRO:TargetAura(Debuff.SerpentSting, timeShift);
 		local _LatentPoison, _LatentPoison_COUNT = ConRO:TargetAura(Debuff.LatentPoison, timeShift);
+	local _SteelTrap, _SteelTrap_RDY = ConRO:AbilityReady(Ability.SteelTrap, timeShift);
 	local _TranquilizingShot, _TranquilizingShot_RDY = ConRO:AbilityReady(Ability.TranquilizingShot, timeShift);
 	local _WildfireBomb, _WildfireBomb_RDY = ConRO:AbilityReady(Ability.WildfireBomb, timeShift);
 		local _WildfireBomb_CHARGES, _WildfireBomb_MCHARGES, _WildfireBomb_CCD = ConRO:SpellCharges(_WildfireBomb);
@@ -855,22 +772,10 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 	local _VolatileBomb, _VolatileBomb_RDY = ConRO:AbilityReady(Ability.WildfireInfusion.VolatileBomb, timeShift);
 		local _VolatileBomb_DEBUFF = ConRO:TargetAura(Debuff.VolatileBomb, timeShift + 1);
 
-	local _FlankingStrike, _FlankingStrike_RDY			 												= ConRO:AbilityReady(Ability.FlankingStrike, timeShift);
-	local _MongooseBite, _MongooseBite_RDY																= ConRO:AbilityReady(Ability.MongooseBite, timeShift);
-		local _MongooseFury_BUFF, _MongooseFury_COUNT, _MongooseFury_DUR									= ConRO:Aura(Buff.MongooseFury, timeShift);
-	local _SteelTrap, _SteelTrap_RDY																	= ConRO:AbilityReady(Ability.SteelTrap, timeShift);
-
-	local _DeathChakram, _DeathChakram_RDY																= ConRO:AbilityReady(Ability.DeathChakram, timeShift);
-
 --Conditions
-	local _is_moving 																					= ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
-	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
-	local _can_execute																					= _Target_Percent_Health <= 20;
-
-	local _Pet_summoned 																				= ConRO:CallPet();
-	local _Pet_assist 																					= ConRO:PetAssist();
-	local _Pet_Percent_Health																			= ConRO:PercentHealth('pet');
+	local _Pet_summoned = ConRO:CallPet();
+	local _Pet_assist = ConRO:PetAssist();
+	local _Pet_Percent_Health = ConRO:PercentHealth('pet');
 
 		if ConRO:FindCurrentSpell(_ShrapnelBomb) then
 			_ShrapnelBomb_RDY = _WildfireBomb_RDY;
@@ -940,7 +845,7 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 			_CoordinatedAssault_RDY = false;
 		end
 
-		if _KillShot_RDY and _CoordinatedAssault_BUFF and (_can_execute or tChosen[Ability.CoordinatedKill.talentID]) then
+		if _KillShot_RDY and _CoordinatedAssault_BUFF and (_can_Execute or tChosen[Ability.CoordinatedKill.talentID]) then
 			tinsert(ConRO.SuggestedSpells, _KillShot);
 			_KillShot_RDY = false;
 		end
@@ -1019,7 +924,7 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 			_MongooseBite_RDY = false;
 		end
 
-		if _KillShot_RDY and _can_execute then
+		if _KillShot_RDY and _can_Execute then
 			tinsert(ConRO.SuggestedSpells, _KillShot);
 			_KillShot_RDY = false;
 		end
@@ -1103,23 +1008,9 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 end
 
 function ConRO.Hunter.SurvivalDef(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
-	wipe(ConRO.SuggestedDefSpells)
-	local Racial, Ability, Form, Buff, Debuff, PetAbility, PvPTalent, Glyph = ids.Racial, ids.Surv_Ability, ids.Surv_Form, ids.Surv_Buff, ids.Surv_Debuff, ids.Surv_PetAbility, ids.Surv_PvPTalent, ids.Glyph;
---Info			
-	local _Player_Level = UnitLevel("player");
-	local _Player_Percent_Health = ConRO:PercentHealth('player');
-	local _is_PvP = ConRO:IsPvP();
-	local _in_combat = UnitAffectingCombat('player');
-	local _party_size = GetNumGroupMembers();
-
-	local _is_PC = UnitPlayerControlled("target");
-	local _is_Enemy = ConRO:TarHostile();
-	local _Target_Health = UnitHealth('target');
-	local _Target_Percent_Health = ConRO:PercentHealth('target');
-
---Resources	
-	local _Focus, _Focus_Max = ConRO:PlayerPower('Focus');
-	local _Heroism_BUFF, _Sated_DEBUFF = ConRO:Heroism();
+	wipe(ConRO.SuggestedDefSpells);
+	ConRO:Stats();
+	local Ability, Form, Buff, Debuff, PetAbility, PvPTalent = ids.Surv_Ability, ids.Surv_Form, ids.Surv_Buff, ids.Surv_Debuff, ids.Surv_PetAbility, ids.Surv_PvPTalent;
 
 --Abilities
 	local _Exhilaration, _Exhilaration_RDY = ConRO:AbilityReady(Ability.Exhilaration, timeShift);
@@ -1128,10 +1019,6 @@ function ConRO.Hunter.SurvivalDef(_, timeShift, currentSpell, gcd, tChosen, pvpC
 	local _FeedPet, _FeedPet_RDY = ConRO:AbilityReady(Ability.PetUtility.FeedPet, timeShift);
 
 --Conditions
-	local _is_moving = ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee = ConRO:Targets("Melee");
-	local _enemies_in_10yrds, _target_in_10yrds = ConRO:Targets("10");
-
 	local _Pet_summoned = ConRO:CallPet();
 	local _Pet_assist = ConRO:PetAssist();
 	local _Pet_Percent_Health = ConRO:PercentHealth('pet');
