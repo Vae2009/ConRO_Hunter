@@ -13,7 +13,7 @@ local ConRO_Hunter, ids = ...;
 
 	ids.HeroSpec = {
 		Sentinel = 42,
-		PactLeader = 43,
+		PackLeader = 43,
 		DarkRanger = 44,
 	}
 
@@ -156,7 +156,8 @@ local ConRO_Hunter, ids = ...;
 		ShowerofBlood = {spellID = 459729, talentID = 126428},
 	--Hero
 	--Dark Ranger
-		BlackArrow = {spellID = 466932, talentID = 117584},
+		BlackArrowPassive = {spellID = 466932, talentID = 117584},
+			BlackArrow = {spellID = 466930, talentID = 117584},
 		BleakArrows = {spellID = 467749, talentID = 117558},
 		ShadowHounds = {spellID = 430707, talentID = 117580},
 		SoulDrinker = {spellID = 469638, talentID = 128238},
