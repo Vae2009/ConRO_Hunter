@@ -274,6 +274,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 
 				if _BestialWrath_RDY and not _BestialWrath_BUFF and not ConRO:HeroSpec(HeroSpec.DarkRanger) and ConRO:FullMode(_BestialWrath) then
 					tinsert(ConRO.SuggestedSpells, _BestialWrath);
+					_BestialWrath_RDY = false;
 					_Queue = _Queue + 1;
 					break;
 				end
@@ -281,6 +282,9 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				if _BarbedShot_RDY and _BarbedShot_CHARGES >= 2 then
 					tinsert(ConRO.SuggestedSpells, _BarbedShot);
 					_BarbedShot_CHARGES = _BarbedShot_CHARGES - 1;
+					_Frenzy_BUFF = true;
+					_Frenzy_DUR = 14;
+					_Frenzy_COUNT = _Frenzy_COUNT + 1;
 					_Queue = _Queue + 1;
 					break;
 				end
@@ -295,19 +299,23 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				if _DireBeast_RDY then
 					tinsert(ConRO.SuggestedSpells, _DireBeast);
 					_DireBeast_RDY = false;
+					_Focus = _Focus + 20;
 					_Queue = _Queue + 1;
 					break;
 				end
 
-				if _KillCommand_RDY then
+				if _KillCommand_RDY and _Focus >= 30 and _KillCommand_CHARGES >= 1 then
 					tinsert(ConRO.SuggestedSpells, _KillCommand);
 					_KillCommand_RDY = false;
+					_KillCommand_CHARGES = _KillCommand_CHARGES - 1;
+					_Focus = _Focus - 30;
 					_Queue = _Queue + 1;
 					break;
 				end
 
 				if _BestialWrath_RDY and not _BestialWrath_BUFF and ConRO:FullMode(_BestialWrath) then
 					tinsert(ConRO.SuggestedSpells, _BestialWrath);
+					_BestialWrath_RDY = false;
 					_Queue = _Queue + 1;
 					break;
 				end
@@ -324,21 +332,25 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				tinsert(ConRO.SuggestedSpells, _BarbedShot);
 				_BarbedShot_CHARGES = _BarbedShot_CHARGES - 1;
 				_Frenzy_BUFF = true;
+				_Frenzy_DUR = 14;
 				_Frenzy_COUNT = _Frenzy_COUNT + 1;
 				_Queue = _Queue + 1;
 				break;
 			end
 
-			if _KillCommand_RDY and _KillCommand_CHARGES >= 1 and (_CalloftheWild_CD < 3 or _CalloftheWild_RDY) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible()) then
+			if _KillCommand_RDY and _Focus >= 30 and _KillCommand_CHARGES >= 1 and (_CalloftheWild_CD < 3 or _CalloftheWild_RDY) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _KillCommand);
 				_KillCommand_CHARGES = _KillCommand_CHARGES - 1;
+				_Focus = _Focus - 30;
 				_Queue = _Queue + 1;
 				break;
 			end
 
-			if _MultiShot_RDY and tChosen[Ability.BeastCleave.talentID] and _BeastCleave_DUR < 2 and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+			if _MultiShot_RDY and _Focus >= 40 and tChosen[Ability.BeastCleave.talentID] and _BeastCleave_DUR < 2 and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _MultiShot);
 				_BeastCleave_BUFF = true;
+				_BeastCleave_DUR = 6;
+				_Focus = _Focus - 40;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -378,9 +390,10 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				break;
 			end
 
-			if _KillCommand_RDY and _KillCommand_CHARGES >= 1 then
+			if _KillCommand_RDY and _Focus >= 30 and _KillCommand_CHARGES >= 1 then
 				tinsert(ConRO.SuggestedSpells, _KillCommand);
 				_KillCommand_CHARGES = _KillCommand_CHARGES - 1;
+				_Focus = _Focus - 30;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -388,6 +401,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 			if _DireBeast_RDY and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _DireBeast);
 				_DireBeast_RDY = false;
+				_Focus = _Focus + 20;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -399,9 +413,12 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				break;
 			end
 
-			if _BarbedShot_RDY and ((_BarbedShot_CHARGES >= _BarbedShot_MaxCHARGES - 1 and _BarbedShot_CCD <= 10) or _CalloftheWild_BUFF or tChosen[Ability.Savagery.talentID] or tChosen[Ability.BarbedScales.talentID] or ConRO:HeroSpec(HeroSpec.PackLeader)) then
+			if _BarbedShot_RDY and _BarbedShot_CHARGES >= 1 and ((_BarbedShot_CHARGES >= _BarbedShot_MaxCHARGES - 1 and _BarbedShot_CCD <= 10) or _CalloftheWild_BUFF or tChosen[Ability.Savagery.talentID] or tChosen[Ability.BarbedScales.talentID] or ConRO:HeroSpec(HeroSpec.PackLeader)) then
 				tinsert(ConRO.SuggestedSpells, _BarbedShot);
 				_BarbedShot_CHARGES = _BarbedShot_CHARGES - 1;
+				_Frenzy_BUFF = true;
+				_Frenzy_DUR = 14;
+				_Frenzy_COUNT = _Frenzy_COUNT + 1;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -413,8 +430,9 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				break;
 			end
 
-			if _ArcaneShot_RDY and _BestialWrath_BUFF and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible()) then
+			if _ArcaneShot_RDY and _Focus >= 35 and _BestialWrath_BUFF and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _ArcaneShot);
+				_Focus = _Focus - 35;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -426,16 +444,18 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				break;
 			end
 
-			if _Barrage_RDY and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+			if _Barrage_RDY and _Focus >= 60 and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _Barrage);
 				_Barrage_RDY = false;
+				_Focus = _Focus - 60;
 				_Queue = _Queue + 1;
 				break;
 			end
 
-			if _ExplosiveShot_RDY and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+			if _ExplosiveShot_RDY and _Focus >= 20 and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _ExplosiveShot);
 				_ExplosiveShot_RDY = false;
+				_Focus = _Focus - 20;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -443,12 +463,14 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 			if _DireBeast_RDY then
 				tinsert(ConRO.SuggestedSpells, _DireBeast);
 				_DireBeast_RDY = false;
+				_Focus = _Focus + 20;
 				_Queue = _Queue + 1;
 				break;
 			end
 
-			if _ArcaneShot_RDY and (_Focus >= _Focus_Max - 20 or (ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible()) then
+			if _ArcaneShot_RDY and _Focus >= 35 and (_Focus >= _Focus_Max - 20 or (ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _ArcaneShot);
+				_Focus = _Focus - 35;
 				_Queue = _Queue + 1;
 				break;
 			end
