@@ -275,6 +275,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				if _BestialWrath_RDY and not _BestialWrath_BUFF and not ConRO:HeroSpec(HeroSpec.DarkRanger) and ConRO:FullMode(_BestialWrath) then
 					tinsert(ConRO.SuggestedSpells, _BestialWrath);
 					_BestialWrath_RDY = false;
+					_BestialWrath_BUFF = true;
 					_Queue = _Queue + 1;
 					break;
 				end
@@ -292,6 +293,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				if _KillShot_RDY and (_CAN_KillShot or _Deathblow_BUFF) and ConRO:HeroSpec(HeroSpec.DarkRanger) then
 					tinsert(ConRO.SuggestedSpells, _KillShot);
 					_KillShot_RDY = false;
+					_Deathblow_BUFF = false;
 					_Queue = _Queue + 1;
 					break;
 				end
@@ -316,6 +318,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				if _BestialWrath_RDY and not _BestialWrath_BUFF and ConRO:FullMode(_BestialWrath) then
 					tinsert(ConRO.SuggestedSpells, _BestialWrath);
 					_BestialWrath_RDY = false;
+					_BestialWrath_BUFF = true;
 					_Queue = _Queue + 1;
 					break;
 				end
@@ -365,6 +368,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 			if _KillShot_RDY and (_CAN_KillShot or _Deathblow_BUFF) and ((tChosen[Ability.VenomsBite.talentID] and _SerpentSting_DUR < 3) or _BeastCleave_BUFF) and ConRO:HeroSpec(HeroSpec.DarkRanger) then
 				tinsert(ConRO.SuggestedSpells, _KillShot);
 				_KillShot_RDY = false;
+				_Deathblow_BUFF = false;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -409,6 +413,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 			if _KillShot_RDY and (_CAN_KillShot or _Deathblow_BUFF) and tChosen[Ability.VenomsBite.talentID] and _SerpentSting_DUR < 3 and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _KillShot);
 				_KillShot_RDY = false;
+				_Deathblow_BUFF = false;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -426,6 +431,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 			if _KillShot_RDY and (_CAN_KillShot or _Deathblow_BUFF) and ConRO:HeroSpec(HeroSpec.DarkRanger) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range <= 1) or ConRO_SingleButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _KillShot);
 				_KillShot_RDY = false;
+				_Deathblow_BUFF = false;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -440,6 +446,7 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 			if _KillShot_RDY and (_CAN_KillShot or _Deathblow_BUFF) then
 				tinsert(ConRO.SuggestedSpells, _KillShot);
 				_KillShot_RDY = false;
+				_Deathblow_BUFF = false;
 				_Queue = _Queue + 1;
 				break;
 			end
@@ -475,10 +482,11 @@ function ConRO.Hunter.BeastMastery(_, timeShift, currentSpell, gcd, tChosen, pvp
 				break;
 			end
 
-			_Queue = _Queue + 1;
+			tinsert(ConRO.SuggestedSpells, 289603); --Waiting Spell Icon
+			_Queue = _Queue + 3;
 			break;
 		end
-	until _Queue > 3;
+	until _Queue >= 3;
 return nil;
 end
 
@@ -567,6 +575,13 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 		_AimedShot_CHARGES = _AimedShot_CHARGES - 1;
 	end
 
+	local _ArcaneShot_COST = 40;
+	local _MultiShot_COST = 30;
+	local _AimedShot_COST = 35;
+	if tChosen[Ability.CrackShot.talentID] then
+		_ArcaneShot_COST = _ArcaneShot_COST - 20;
+	end
+
 	if tChosen[Ability.ChimaeraShot.talentID] then
 		_ArcaneShot, _ArcaneShot_RDY = ConRO:AbilityReady(Ability.ChimaeraShot, timeShift);
 	end
@@ -584,7 +599,6 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 	ConRO:AbilityMovement(_Disengage, _Disengage_RDY and _target_in_melee);
 
 	ConRO:AbilityBurst(_Trueshot, _Trueshot_RDY and _AimedShot_CHARGES >= 1 and ConRO:BurstMode(_Trueshot));
-	ConRO:AbilityBurst(_Salvo, _Salvo_RDY and ConRO:BurstMode(_Salvo));
 	ConRO:AbilityBurst(_Volley, _Volley_RDY and (_RapidFire_RDY or _AimedShot_RDY) and ConRO:BurstMode(_Volley));
 	ConRO:AbilityBurst(_PrimalRage, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
 	ConRO:AbilityBurst(_PrimalRageCR, _PrimalRage_RDY and _party_size <= 1 and _in_combat and not _Heroism_BUFF and not _Sated_DEBUFF);
@@ -593,150 +607,228 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 --Warnings
 
 --Rotations
-	for i = 1, 2, 1 do
-		if not _in_combat then
-			if _HuntersMark_RDY and not _HuntersMark_DEBUFF and _Target_Percent_Health > 80 then
-				tinsert(ConRO.SuggestedSpells, _HuntersMark);
-				_HuntersMark_DEBUFF = true;
+	repeat
+		while(true) do
+			if _PreciseShot_BUFF then
+				_ArcaneShot_COST = _ArcaneShot_COST / 2;
+				_MultiShot_COST = _MultiShot_COST / 2;
 			end
 
-			if ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-				if _AimedShot_RDY and _AimedShot_CHARGES >= 1 and currentSpell ~= _AimedShot then
-					tinsert(ConRO.SuggestedSpells, _AimedShot);
-					_AimedShot_CHARGES = _AimedShot_CHARGES - 1;
-					_PreciseShot_COUNT = _PreciseShot_COUNT + 1;
+			if _Trueshot_BUFF then
+				_AimedShot_COST = _AimedShot_COST / 2;
+			end
+
+			if _LockandLoad_BUFF then
+				_AimedShot_COST = 0;
+			end
+
+			if not _in_combat then
+				if _HuntersMark_RDY and not _HuntersMark_DEBUFF and _Target_Percent_Health > 80 then
+					tinsert(ConRO.SuggestedSpells, _HuntersMark);
+					_HuntersMark_DEBUFF = true;
+					_Queue = _Queue + 1;
+					break;
 				end
 
-				if _KillShot_RDY and _KillShot_CHARGES >= 1 and (_CAN_KillShot or _Deathblow_BUFF) then
-					tinsert(ConRO.SuggestedSpells, _KillShot);
-					_KillShot_CHARGES = _KillShot_CHARGES - 1;
-					if _Deathblow_BUFF then
+				if ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+					if _AimedShot_RDY and _Focus >= _AimedShot_COST and _AimedShot_CHARGES >= 1 and currentSpell ~= _AimedShot then
+						tinsert(ConRO.SuggestedSpells, _AimedShot);
+						_AimedShot_CHARGES = _AimedShot_CHARGES - 1;
+						_PreciseShot_BUFF = true;
+						_Focus = _Focus - _AimedShot_COST;
+						_Queue = _Queue + 1;
+						break;
+					end
+
+					if _KillShot_RDY and _Focus >= 10 and _KillShot_CHARGES >= 1 and (_CAN_KillShot or _Deathblow_BUFF) then
+						tinsert(ConRO.SuggestedSpells, _KillShot);
+						_KillShot_CHARGES = _KillShot_CHARGES - 1;
 						_Deathblow_BUFF = false;
+						_Focus = _Focus - 10;
+						_Queue = _Queue + 1;
+						break;
+					end
+
+					if _RapidFire_RDY then
+						tinsert(ConRO.SuggestedSpells, _RapidFire);
+						_RapidFire_RDY = false;
+						_Queue = _Queue + 1;
+						break;
 					end
 				end
 
-				if _RapidFire_RDY then
-					tinsert(ConRO.SuggestedSpells, _RapidFire);
-					_RapidFire_RDY = false;
+				if _SteadyShot_RDY and tChosen[Ability.SteadyFocus.talentID] and (not _SteadyFocus_BUFF or _SteadyFocus_DUR <= 1.5) and currentSpell ~= _SteadyShot then
+					tinsert(ConRO.SuggestedSpells, _SteadyShot);
+					_SteadyShot_RDY = false;
+					_SteadyFocus_BUFF = true;
+					_SteadyFocus_DUR = 15;
+					_Focus = _Focus + 10;
+					_Queue = _Queue + 1;
+					break;
 				end
 			end
 
-			if _SteadyShot_RDY and tChosen[Ability.SteadyFocus.talentID] and currentSpell ~= _SteadyShot then
+			if _SteadyShot_RDY and tChosen[Ability.SteadyFocus.talentID] and (not _SteadyFocus_BUFF or _SteadyFocus_DUR <= 1.5) and currentSpell ~= _SteadyShot and not _Trueshot_BUFF and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _SteadyShot);
 				_SteadyShot_RDY = false;
+				_SteadyFocus_BUFF = true;
+				_SteadyFocus_DUR = 15;
+				_Focus = _Focus + 10;
+				_Queue = _Queue + 1;
+				break;
 			end
-		end
 
-		if _SteadyShot_RDY and tChosen[Ability.SteadyFocus.talentID] and (not _SteadyFocus_BUFF or _SteadyFocus_DUR <= 1.5) and currentSpell ~= _SteadyShot and not _Trueshot_BUFF and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-			tinsert(ConRO.SuggestedSpells, _SteadyShot);
-			_SteadyShot_RDY = false;
-		end
+			if _ExplosiveShot_RDY and _Focus >= 20 and not _ExplosiveShot_DEBUFF and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+				tinsert(ConRO.SuggestedSpells, _ExplosiveShot);
+				_ExplosiveShot_RDY = false;
+				_ExplosiveShot_DEBUFF = true;
+				_Focus = _Focus - 20;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _ExplosiveShot_RDY and not _ExplosiveShot_DEBUFF and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-			tinsert(ConRO.SuggestedSpells, _ExplosiveShot);
-			_ExplosiveShot_RDY = false;
-		end
+			if _Volley_RDY and ConRO:FullMode(_Volley) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+				tinsert(ConRO.SuggestedSpells, _Volley);
+				_Volley_RDY = false;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _Salvo_RDY and not _ExplosiveShot_DEBUFF and ConRO:FullMode(_Salvo) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-			tinsert(ConRO.SuggestedSpells, _Salvo);
-			_Salvo_RDY = false;
-		end
+			if _MultiShot_RDY and _Focus >= _MultiShot_COST and not _TrickShots_BUFF and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+				tinsert(ConRO.SuggestedSpells, _MultiShot);
+				_TrickShots_BUFF = true;
+				_PreciseShot_BUFF = false;
+				_Focus = _Focus - _MultiShot_COST;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _Volley_RDY and ConRO:FullMode(_Volley) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-			tinsert(ConRO.SuggestedSpells, _Volley);
-			_Volley_RDY = false;
-		end
-
-		if _MultiShot_RDY and not _TrickShots_BUFF and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-			tinsert(ConRO.SuggestedSpells, _MultiShot);
-			_TrickShots_BUFF = true;
-			_PreciseShot_COUNT = _PreciseShot_COUNT - 1;
-		end
-
-		if _KillShot_RDY and _KillShot_CHARGES >= 1 and (_CAN_KillShot or _Deathblow_BUFF) and _RazorFragments_BUFF then
-			tinsert(ConRO.SuggestedSpells, _KillShot);
-			_KillShot_CHARGES = _KillShot_CHARGES - 1;
-			if _Deathblow_BUFF then
+			if _KillShot_RDY and _Focus >= 10 and _KillShot_CHARGES >= 1 and (_CAN_KillShot or _Deathblow_BUFF) and _RazorFragments_BUFF then
+				tinsert(ConRO.SuggestedSpells, _KillShot);
+				_KillShot_CHARGES = _KillShot_CHARGES - 1;
+				_RazorFragments_BUFF = false;
 				_Deathblow_BUFF = false;
+				_Focus = _Focus - 10;
+				_Queue = _Queue + 1;
+				break;
 			end
-		end
 
-		if _Barrage_RDY and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-			tinsert(ConRO.SuggestedSpells, _Barrage);
-			_Barrage_RDY = false;
-		end
+			if _Barrage_RDY and _Focus >= 30 and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+				tinsert(ConRO.SuggestedSpells, _Barrage);
+				_Barrage_RDY = false;
+				_Focus = _Focus - 30;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _SteadyShot_RDY and tChosen[Ability.SteadyFocus.talentID] and (not _SteadyFocus_BUFF or _SteadyFocus_DUR <= 1.5) and currentSpell ~= _SteadyShot and not _Trueshot_BUFF then
-			tinsert(ConRO.SuggestedSpells, _SteadyShot);
-			_SteadyShot_RDY = false;
-		end
+			if _SteadyShot_RDY and tChosen[Ability.SteadyFocus.talentID] and (not _SteadyFocus_BUFF or _SteadyFocus_DUR <= 1.5) and currentSpell ~= _SteadyShot and not _Trueshot_BUFF then
+				tinsert(ConRO.SuggestedSpells, _SteadyShot);
+				_SteadyShot_RDY = false;
+				_SteadyFocus_BUFF = true;
+				_SteadyFocus_DUR = 15;
+				_Focus = _Focus + 10;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _RapidFire_RDY then
-			tinsert(ConRO.SuggestedSpells, _RapidFire);
-			_RapidFire_RDY = false;
-		end
+			if _RapidFire_RDY then
+				tinsert(ConRO.SuggestedSpells, _RapidFire);
+				_RapidFire_RDY = false;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _Trueshot_RDY and ConRO:FullMode(_Trueshot) then
-			tinsert(ConRO.SuggestedSpells, _Trueshot);
-			_Trueshot_RDY = false;
-		end
+			if _Trueshot_RDY and ConRO:FullMode(_Trueshot) then
+				tinsert(ConRO.SuggestedSpells, _Trueshot);
+				_Trueshot_RDY = false;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _WailingArrow_RDY and _WailingArrow_BUFF then
-			tinsert(ConRO.SuggestedSpells, _WailingArrow);
-			_WailingArrow_RDY = false;
-		end
+			if _WailingArrow_RDY and _Focus >= 15 and _WailingArrow_BUFF then
+				tinsert(ConRO.SuggestedSpells, _WailingArrow);
+				_WailingArrow_RDY = false;
+				_Focus = _Focus - 15;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _AimedShot_RDY and currentSpell ~= _AimedShot then
-			tinsert(ConRO.SuggestedSpells, _AimedShot);
-			_PreciseShot_COUNT = 1;
-			_AimedShot_RDY = false;
-		end
+			if _AimedShot_RDY and _Focus >= _AimedShot_COST and currentSpell ~= _AimedShot then
+				tinsert(ConRO.SuggestedSpells, _AimedShot);
+				_PreciseShot_BUFF = true;
+				_AimedShot_RDY = false;
+				_Focus = _Focus - _AimedShot_COST;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _KillShot_RDY and _KillShot_CHARGES >= 1 and (_CAN_KillShot or _Deathblow_BUFF) then
-			tinsert(ConRO.SuggestedSpells, _KillShot);
-			_KillShot_CHARGES = _KillShot_CHARGES - 1;
-			if _Deathblow_BUFF then
+			if _KillShot_RDY and _Focus >= 10 and _KillShot_CHARGES >= 1 and (_CAN_KillShot or _Deathblow_BUFF) then
+				tinsert(ConRO.SuggestedSpells, _KillShot);
+				_KillShot_CHARGES = _KillShot_CHARGES - 1;
 				_Deathblow_BUFF = false;
+				_Focus = _Focus - 10;
+				_Queue = _Queue + 1;
+				break;
 			end
-		end
 
-		if _MultiShot_RDY and (not _TrickShots_BUFF or currentSpell == _AimedShot) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
-			tinsert(ConRO.SuggestedSpells, _MultiShot);
-			_TrickShots_BUFF = true;
-			_PreciseShot_COUNT = _PreciseShot_COUNT - 1;
-		end
+			if _MultiShot_RDY and _Focus >= _MultiShot_COST and (not _TrickShots_BUFF or currentSpell == _AimedShot) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+				tinsert(ConRO.SuggestedSpells, _MultiShot);
+				_TrickShots_BUFF = true;
+				_PreciseShot_BUFF = false;
+				_Focus = _Focus - _MultiShot_COST;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _ArcaneShot_RDY and (_PreciseShot_COUNT >= 1 or currentSpell == _AimedShot) then
-			tinsert(ConRO.SuggestedSpells, _ArcaneShot);
-			_Focus = _Focus - 20;
-			_PreciseShot_COUNT = _PreciseShot_COUNT - 1;
-		end
+			if _ArcaneShot_RDY and _Focus >= _ArcaneShot_COST and (_PreciseShot_BUFF or currentSpell == _AimedShot) then
+				tinsert(ConRO.SuggestedSpells, _ArcaneShot);
+				_Focus = _Focus - _ArcaneShot_COST;
+				_PreciseShot_BUFF = false;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _Barrage_RDY then
-			tinsert(ConRO.SuggestedSpells, _Barrage);
-			_Barrage_RDY = false;
-		end
+			if _Barrage_RDY and _Focus >= 30 then
+				tinsert(ConRO.SuggestedSpells, _Barrage);
+				_Barrage_RDY = false;
+				_Focus = _Focus - 30;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _Salvo_RDY and not _ExplosiveShot_DEBUFF and ConRO:FullMode(_Salvo) then
-			tinsert(ConRO.SuggestedSpells, _Salvo);
-			_Salvo_RDY = false;
-		end
+			if _Volley_RDY and ConRO:FullMode(_Volley) then
+				tinsert(ConRO.SuggestedSpells, _Volley);
+				_Volley_RDY = false;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _Volley_RDY and ConRO:FullMode(_Volley) then
-			tinsert(ConRO.SuggestedSpells, _Volley);
-			_Volley_RDY = false;
-		end
+			if _ExplosiveShot_RDY and _Focus >= 20 and not _ExplosiveShot_DEBUFF then
+				tinsert(ConRO.SuggestedSpells, _ExplosiveShot);
+				_ExplosiveShot_RDY = false;
+				_ExplosiveShot_DEBUFF = true;
+				_Focus = _Focus - 20;
+				_Queue = _Queue + 1;
+				break;
+			end
 
-		if _ExplosiveShot_RDY and not _ExplosiveShot_DEBUFF then
-			tinsert(ConRO.SuggestedSpells, _ExplosiveShot);
-			_ExplosiveShot_RDY = false;
-		end
+			if _SteadyShot_RDY and _Focus <= _Focus_Max - 10 then
+				tinsert(ConRO.SuggestedSpells, _SteadyShot);
+				if tChosen[Ability.SteadyFocus.talentID] then
+					_SteadyFocus_BUFF = true;
+					_SteadyFocus_DUR = 15;
+				end
+				_Queue = _Queue + 1;
+				_Focus = _Focus + 10;
+				break;
+			end
 
-		if _SteadyShot_RDY then
-			tinsert(ConRO.SuggestedSpells, _SteadyShot);
+			tinsert(ConRO.SuggestedSpells, 289603); --Waiting Spell Icon
+			_Queue = _Queue + 3;
+			break;
 		end
-	end
-	return nil;
+	until _Queue >= 3;
+return nil;
 end
 
 function ConRO.Hunter.MarksmanshipDef(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
@@ -777,7 +869,7 @@ function ConRO.Hunter.MarksmanshipDef(_, timeShift, currentSpell, gcd, tChosen, 
 	if _SurvivaloftheFittest_RDY and _LoneWolf_FORM and _in_combat then
 		tinsert(ConRO.SuggestedDefSpells, _SurvivaloftheFittest);
 	end
-	return nil;
+return nil;
 end
 
 function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
@@ -848,120 +940,188 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 	ConRO:Warnings("Call your pet!", _CallPet_RDY and not _Pet_summoned);
 
 --Rotations
-	for i = 1, 2, 1 do
-		if not _in_combat then
-			if _WildfireBomb_RDY and _WildfireBomb_CHARGES >= 1 then
-				tinsert(ConRO.SuggestedSpells, _WildfireBomb);
-				_WildfireBomb_RDY = false;
+	repeat
+		while(true) do
+			if not _in_combat then
+				if _WildfireBomb_RDY and _Focus >= 10 and _WildfireBomb_CHARGES >= 1 then
+					tinsert(ConRO.SuggestedSpells, _WildfireBomb);
+					_WildfireBomb_RDY = false;
+					_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
+					_Focus = _Focus - 10;
+					_Queue = _Queue + 1;
+					break;
+				end
 			end
+
+			--[[if _WildfireBomb_RDY and _WildfireBomb_CHARGES >= 1 and _LunarStorm_BUFF then
+				tinsert(ConRO.SuggestedSpells, _WildfireBomb);
+				_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
+			end]]
+
+			if _KillCommand_RDY and tChosen[Ability.RelentlessPrimal.talentID] and _CoordinatedAssault_BUFF and _TipoftheSpear_COUNT <= 0 then
+				tinsert(ConRO.SuggestedSpells, _KillCommand);
+				_KillCommand_RDY = false;
+				_Focus = _Focus + 15;
+				_TipoftheSpear_COUNT = 3;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _Butchery_RDY and tChosen[Ability.MercilessBlows.talentID] and ConRO:HeroSpec(HeroSpec.PackLeader) then
+				tinsert(ConRO.SuggestedSpells, _Butchery);
+				_Butchery_RDY = false;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _Spearhead_RDY and not _CoordinatedAssault_BUFF and ConRO:FullMode(_Spearhead) and ConRO:HeroSpec(HeroSpec.Sentinel) then
+				tinsert(ConRO.SuggestedSpells, _Spearhead);
+				_Spearhead_RDY = false;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _RaptorStrike_RDY and _Focus >= 30 and tChosen[Ability.VipersVenom.talentID] and not _SerpentSting_DEBUFF then
+				tinsert(ConRO.SuggestedSpells, _RaptorStrike);
+				_Focus = _Focus - 30;
+				_SerpentSting_DEBUFF = true;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _FlankingStrike_RDY and _Focus >= 15 and _TipoftheSpear_COUNT <= 2 and ConRO:HeroSpec(HeroSpec.PackLeader) then
+				tinsert(ConRO.SuggestedSpells, _FlankingStrike);
+				_FlankingStrike_RDY = false;
+				_Focus = _Focus - 15;
+				_TipoftheSpear_COUNT = _TipoftheSpear_COUNT + 2;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _WildfireBomb_RDY and _Focus >= 10 and _WildfireBomb_CHARGES >= 1 and _WildfireBomb_CCD >= 7 and _TipoftheSpear_COUNT >= 1 and ConRO:HeroSpec(HeroSpec.PackLeader) then
+				tinsert(ConRO.SuggestedSpells, _WildfireBomb);
+				_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
+				_Focus = _Focus - 10;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _Butchery_RDY and _Focus >= 30 and tChosen[Ability.MercilessBlows.talentID] then
+				tinsert(ConRO.SuggestedSpells, _Butchery);
+				_Butchery_RDY = false;
+				_Focus = _Focus - 30;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _WildfireBomb_RDY and _Focus >= 10 and _WildfireBomb_CHARGES == _WildfireBomb_MCHARGES then
+				tinsert(ConRO.SuggestedSpells, _WildfireBomb);
+				_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
+				_Focus = _Focus - 10;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _Spearhead_RDY and not _CoordinatedAssault_BUFF and ConRO:FullMode(_Spearhead) then
+				tinsert(ConRO.SuggestedSpells, _Spearhead);
+				_Spearhead_RDY = false;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _FlankingStrike_RDY and _Focus >= 15 and _TipoftheSpear_COUNT <= 2 then
+				tinsert(ConRO.SuggestedSpells, _FlankingStrike);
+				_FlankingStrike_RDY = false;
+				_Focus = _Focus - 15;
+				_TipoftheSpear_COUNT = _TipoftheSpear_COUNT + 2;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _KillShot_RDY and _Focus >= 10 and (_can_Execute or _Deathblow_BUFF) and _TipoftheSpear_COUNT >= 1 then
+				tinsert(ConRO.SuggestedSpells, _KillShot);
+				_KillShot_RDY = false;
+				_Focus = _Focus - 10;
+				_Deathblow_BUFF = false;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _WildfireBomb_RDY and _Focus >= 10 and _WildfireBomb_CHARGES >= 1 and _WildfireBomb_CCD >= 7 and _TipoftheSpear_COUNT >= 1 then
+				tinsert(ConRO.SuggestedSpells, _WildfireBomb);
+				_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
+				_Focus = _Focus - 10;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _ExplosiveShot_RDY and _Focus >= 20 then
+				tinsert(ConRO.SuggestedSpells, _ExplosiveShot);
+				_ExplosiveShot_RDY = false;
+				_Focus = _Focus - 20;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _CoordinatedAssault_RDY and not _Spearhead_BUFF and ConRO:FullMode(_CoordinatedAssault) then
+				tinsert(ConRO.SuggestedSpells, _CoordinatedAssault);
+				_CoordinatedAssault_RDY = false;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _FuryoftheEagle_RDY and _TipoftheSpear_COUNT >= 1 then
+				tinsert(ConRO.SuggestedSpells, _FuryoftheEagle);
+				_FuryoftheEagle_RDY = false;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			--[[if _RaptorStrike_RDY and not _FuriousAssault_BUFF then
+				tinsert(ConRO.SuggestedSpells, _RaptorStrike);
+				_SerpentSting_DEBUFF = true;
+				_Queue = _Queue + 1;
+				break;
+			end]]
+
+			if _KillShot_RDY and _Focus >= 10 and (_can_Execute or _Deathblow_BUFF) then
+				tinsert(ConRO.SuggestedSpells, _KillShot);
+				_KillShot_RDY = false;
+				_Focus = _Focus - 10;
+				_Deathblow_BUFF = false;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _KillCommand_RDY and _Focus <= _Focus_Max - 15 then
+				tinsert(ConRO.SuggestedSpells, _KillCommand);
+				_KillCommand_RDY = false;
+				_Focus = _Focus + 15;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _WildfireBomb_RDY and _Focus >= 10 and _WildfireBomb_CHARGES >= 1 and _TipoftheSpear_COUNT >= 1 then
+				tinsert(ConRO.SuggestedSpells, _WildfireBomb);
+				_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
+				_Focus = _Focus - 10;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _RaptorStrike_RDY and _Focus >= 30 then
+				tinsert(ConRO.SuggestedSpells, _RaptorStrike);
+				_Focus = _Focus - 30;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			tinsert(ConRO.SuggestedSpells, 289603); --Waiting Spell Icon
+			_Queue = _Queue + 3;
+			break;
 		end
-
-		--[[if _WildfireBomb_RDY and _WildfireBomb_CHARGES >= 1 and _LunarStorm_BUFF then
-			tinsert(ConRO.SuggestedSpells, _WildfireBomb);
-			_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
-		end]]
-
-		if _KillCommand_RDY and tChosen[Ability.RelentlessPrimal.talentID] and _CoordinatedAssault_BUFF and _TipoftheSpear_COUNT <= 0 then
-			tinsert(ConRO.SuggestedSpells, _KillCommand);
-			_KillCommand_RDY = false;
-			_TipoftheSpear_COUNT = 3;
-		end
-
-		if _Butchery_RDY and tChosen[Ability.MercilessBlows.talentID] and ConRO:HeroSpec(HeroSpec.PackLeader) then
-			tinsert(ConRO.SuggestedSpells, _Butchery);
-			_Butchery_RDY = false;
-		end
-
-		if _Spearhead_RDY and not _CoordinatedAssault_BUFF and ConRO:FullMode(_Spearhead) and ConRO:HeroSpec(HeroSpec.Sentinel) then
-			tinsert(ConRO.SuggestedSpells, _Spearhead);
-			_Spearhead_RDY = false;
-		end
-
-		if _RaptorStrike_RDY and tChosen[Ability.VipersVenom.talentID] and not _SerpentSting_DEBUFF then
-			tinsert(ConRO.SuggestedSpells, _RaptorStrike);
-			_SerpentSting_DEBUFF = true;
-		end
-
-		if _FlankingStrike_RDY and _TipoftheSpear_COUNT <= 2 and ConRO:HeroSpec(HeroSpec.PackLeader) then
-			tinsert(ConRO.SuggestedSpells, _FlankingStrike);
-			_FlankingStrike_RDY = false;
-		end
-
-		if _WildfireBomb_RDY and _WildfireBomb_CHARGES >= 1 and _WildfireBomb_CCD >= 7 and _TipoftheSpear_COUNT >= 1 and ConRO:HeroSpec(HeroSpec.PackLeader) then
-			tinsert(ConRO.SuggestedSpells, _WildfireBomb);
-			_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
-		end
-
-		if _Butchery_RDY and tChosen[Ability.MercilessBlows.talentID] then
-			tinsert(ConRO.SuggestedSpells, _Butchery);
-			_Butchery_RDY = false;
-		end
-
-		if _WildfireBomb_RDY and _WildfireBomb_CHARGES == _WildfireBomb_MCHARGES then
-			tinsert(ConRO.SuggestedSpells, _WildfireBomb);
-			_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
-		end
-
-		if _Spearhead_RDY and not _CoordinatedAssault_BUFF and ConRO:FullMode(_Spearhead) then
-			tinsert(ConRO.SuggestedSpells, _Spearhead);
-			_Spearhead_RDY = false;
-		end
-
-		if _FlankingStrike_RDY and _TipoftheSpear_COUNT <= 2 then
-			tinsert(ConRO.SuggestedSpells, _FlankingStrike);
-			_FlankingStrike_RDY = false;
-		end
-
-		if _KillShot_RDY and (_can_Execute or _Deathblow_BUFF) and _TipoftheSpear_COUNT >= 1 then
-			tinsert(ConRO.SuggestedSpells, _KillShot);
-			_KillShot_RDY = false;
-		end
-
-		if _WildfireBomb_RDY and _WildfireBomb_CHARGES >= 1 and _WildfireBomb_CCD >= 7 and _TipoftheSpear_COUNT >= 1 then
-			tinsert(ConRO.SuggestedSpells, _WildfireBomb);
-			_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
-		end
-
-		if _ExplosiveShot_RDY then
-			tinsert(ConRO.SuggestedSpells, _ExplosiveShot);
-			_ExplosiveShot_RDY = false;
-		end
-
-		if _CoordinatedAssault_RDY and not _Spearhead_BUFF and ConRO:FullMode(_CoordinatedAssault) then
-			tinsert(ConRO.SuggestedSpells, _CoordinatedAssault);
-			_CoordinatedAssault_RDY = false;
-		end
-
-		if _FuryoftheEagle_RDY and _TipoftheSpear_COUNT >= 1 then
-			tinsert(ConRO.SuggestedSpells, _FuryoftheEagle);
-			_FuryoftheEagle_RDY = false;
-		end
-
-		--[[if _RaptorStrike_RDY and not _FuriousAssault_BUFF then
-			tinsert(ConRO.SuggestedSpells, _RaptorStrike);
-			_SerpentSting_DEBUFF = true;
-		end]]
-
-		if _KillShot_RDY and (_can_Execute or _Deathblow_BUFF) then
-			tinsert(ConRO.SuggestedSpells, _KillShot);
-			_KillShot_RDY = false;
-		end
-
-		if _KillCommand_RDY and _Focus <= _Focus_Max - 15 then
-			tinsert(ConRO.SuggestedSpells, _KillCommand);
-			_KillCommand_RDY = false;
-		end
-
-		if _WildfireBomb_RDY and _WildfireBomb_CHARGES >= 1 and _TipoftheSpear_COUNT >= 1 then
-			tinsert(ConRO.SuggestedSpells, _WildfireBomb);
-			_WildfireBomb_CHARGES = _WildfireBomb_CHARGES - 1;
-		end
-
-		if _RaptorStrike_RDY then
-			tinsert(ConRO.SuggestedSpells, _RaptorStrike);
-		end
-	end
-	return nil;
+	until _Queue >= 3;
+return nil;
 end
 
 function ConRO.Hunter.SurvivalDef(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
@@ -996,5 +1156,5 @@ function ConRO.Hunter.SurvivalDef(_, timeShift, currentSpell, gcd, tChosen, pvpC
 	if _AspectoftheTurtle_RDY then
 		tinsert(ConRO.SuggestedDefSpells, _AspectoftheTurtle);
 	end
-	return nil;
+return nil;
 end
