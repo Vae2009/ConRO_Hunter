@@ -687,6 +687,14 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 				break;
 			end
 
+			if _Salvo_RDY and not _ExplosiveShot_DEBUFF and ConRO:FullMode(_Salvo) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
+				tinsert(ConRO.SuggestedSpells, _Salvo);
+				_Salvo_RDY = false;
+				_ExplosiveShot_DEBUFF = true;
+				_Queue = _Queue + 1;
+				break;
+			end
+
 			if _Volley_RDY and ConRO:FullMode(_Volley) and ((ConRO_AutoButton:IsVisible() and _enemies_in_range >= 3) or ConRO_AoEButton:IsVisible()) then
 				tinsert(ConRO.SuggestedSpells, _Volley);
 				_Volley_RDY = false;
@@ -792,6 +800,14 @@ function ConRO.Hunter.Marksmanship(_, timeShift, currentSpell, gcd, tChosen, pvp
 				tinsert(ConRO.SuggestedSpells, _Barrage);
 				_Barrage_RDY = false;
 				_Focus = _Focus - 30;
+				_Queue = _Queue + 1;
+				break;
+			end
+
+			if _Salvo_RDY and not _ExplosiveShot_DEBUFF and ConRO:FullMode(_Salvo) then
+				tinsert(ConRO.SuggestedSpells, _Salvo);
+				_Salvo_RDY = false;
+				_ExplosiveShot_DEBUFF = true;
 				_Queue = _Queue + 1;
 				break;
 			end
