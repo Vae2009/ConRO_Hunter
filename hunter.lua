@@ -932,8 +932,8 @@ function ConRO.Hunter.Survival(_, timeShift, currentSpell, gcd, tChosen, pvpChos
 	local _Pet_Percent_Health = ConRO:PercentHealth('pet');
 
 	if _AspectoftheEagle_BUFF then
-		_RaptorStrike = Ability.RaptorStrikeRanged;
-		_MongooseBite = Ability.MongooseBiteRanged;
+		_RaptorStrike = Ability.RaptorStrikeRanged.spellID;
+		_MongooseBite = Ability.MongooseBiteRanged.spellID;
 	end
 
 	if tChosen[Ability.MongooseBite.talentID] then
