@@ -1,25 +1,24 @@
 local ConRO_Hunter, ids = ...;
 
 --General
-	ids.Racial = {
-		AncestralCall = {spellID = 274738},
-		ArcanePulse = {spellID = 260364},
-		ArcaneTorrent = {spellID = 50613},
-		Berserking = {spellID = 26297},
-		Cannibalize = {spellID = 20577},
-		GiftoftheNaaru = {spellID = 59548},
-		Shadowmeld = {spellID = 58984},
-	}
+ids.racial = {
+	AncestralCall = {spellID = 274738},
+	ArcanePulse = {spellID = 260364},
+	ArcaneTorrent = {spellID = 50613},
+	Berserking = {spellID = 26297},
+	Cannibalize = {spellID = 20577},
+	GiftoftheNaaru = {spellID = 59548},
+	Shadowmeld = {spellID = 58984},
+}
+ids.hero_spec = {
+	Sentinel = 42,
+	PackLeader = 43,
+	DarkRanger = 44,
+}
 
-	ids.HeroSpec = {
-		Sentinel = 42,
-		PackLeader = 43,
-		DarkRanger = 44,
-	}
-
---Beast Mastery
-	ids.BM_Ability = {
-	--Hunter Baseline
+ids.beast_mastery = {
+	ability = {
+	--Baseline
 		ArcaneShot = {spellID = 185358},
 		AspectoftheCheetah = {spellID = 186257},
 		AspectoftheTurtle = {spellID = 186265};
@@ -53,10 +52,10 @@ local ConRO_Hunter, ids = ...;
 		},
 		SteadyShot = {spellID = 56641},
 		WingClip = {spellID = 195645},
-	--BM Baseline
+	--Passive
 		ExoticBeasts = {spellID = 53270},
 		MasteryMasterofBeasts = {spellID = 76657},
-	--Hunter
+	--Hunter Talents
 		NaturalMending = {spellID = 270581, talentID = 126465},
 		Posthaste = {spellID = 109215, talentID = 126475},
 		KillShot = {spellID = 53351, talentID = 126441},
@@ -107,10 +106,14 @@ local ConRO_Hunter, ids = ...;
 		HighExplosiveTrap = {spellID = 236776, talentID = 126830},
 		ImplosiveTrap = {spellID = 462031, talentID = 126829},
 		UnnaturalCauses = {spellID = 459527, talentID = 126450},
-	--Beast Mastery
+	--Beast Mastery Talents
 		KillCommand = {spellID = 34026, talentID = 126408},
 		CobraShot = {spellID = 193455, talentID = 126416},
 		AnimalCompanion = {spellID = 267116, talentID = 126423},
+		solitary_companion = {
+			passiveID = 474746,
+			talentID = 128415
+		},
 		BarbedShot = {spellID = 217200, talentID = 126440},
 		PackTactics = {spellID = 321014, talentID = 126437},
 		AspectoftheBeast = {spellID = 191384, talentID = 126413},
@@ -126,7 +129,10 @@ local ConRO_Hunter, ids = ...;
 		BeastCleave = {spellID = 115939, talentID = 126403},
 		WildCall = {spellID = 185789, talentID = 126399},
 		HuntersPrey = {spellID = 378210, talentID = 126422},
-		VenomsBite = {spellID = 459565, talentID = 126420},
+		poisoned_barbs = {
+			passiveID = 1217535,
+			talentID = 126420
+		},
 		Stomp = {spellID = 199530, talentID = 126409},
 		SerpentineRhythm = {spellID = 468701, talentID = 126421},
 		KillCleave = {spellID = 378207, talentID = 126417},
@@ -138,12 +144,21 @@ local ConRO_Hunter, ids = ...;
 		BestialWrath = {spellID = 19574, talentID = 126402},
 		DireCommand = {spellID = 378743, talentID = 126427},
 		HuntmastersCall = {spellID = 459730, talentID = 126411},
-		DireFrenzy = {spellID = 385810, talentID = 126398},
+		dire_cleave = {
+			passiveID = 1217524,
+			talentID = 126398
+		},
 		KillerInstinct = {spellID = 273887, talentID = 126426},
 		MasterHandler = {spellID = 424558, talentID = 126435},
 		BarbedWrath = {spellID = 231548, talentID = 126436},
-		ExplosiveVenom = {spellID = 459693, talentID = 126433},
-		BasiliskCollar = {spellID = 459571, talentID = 126430},
+		thundering_hooves = {
+			passiveID = 459693,
+			talentID = 126433
+		},
+		dire_frenzy = {
+			passiveID = 385810,
+			talentID = 126430
+		},
 		CalloftheWild = {spellID = 359844, talentID = 126397},
 		KillerCobra = {spellID = 199532, talentID = 126438},
 		ScentofBlood = {spellID = 193532, talentID = 126404},
@@ -154,10 +169,9 @@ local ConRO_Hunter, ids = ...;
 		PiercingFangs = {spellID = 392053, talentID = 126434},
 		VenomousBite = {spellID = 459667, talentID = 126429},
 		ShowerofBlood = {spellID = 459729, talentID = 126428},
-	--Hero
+	--Hero Talents
 	--Dark Ranger
-		BlackArrowPassive = {spellID = 466932, talentID = 117584},
-			BlackArrow = {spellID = 466930, talentID = 117584},
+		BlackArrow = {passiveID = 466932, spellID = 466930, talentID = 117584},
 		BleakArrows = {spellID = 467749, talentID = 117558},
 		ShadowHounds = {spellID = 430707, talentID = 117580},
 		SoulDrinker = {spellID = 469638, talentID = 128238},
@@ -173,42 +187,78 @@ local ConRO_Hunter, ids = ...;
 		BleakPowder = {spellID = 467911, talentID = 117571},
 		WitheringFire = {spellID = 466990, talentID = 117590},
 	--Pack Leader
-		ViciousHunt = {spellID = 445404, talentID = 117588},
-		PackCoordination = {spellID = 445505, talentID = 117582},
-		HowlofthePack = {spellID = 445707, talentID = 117589},
-		WildAttacks = {spellID = 445708, talentID = 117559},
-		DenRecovery = {spellID = 445710, talentID = 117569},
-		TirelessHunt = {spellID = 445701, talentID = 117581},
-		CorneredPrey = {spellID = 445702, talentID = 123782},
-		FrenziedTear = {spellID = 445696, talentID = 117585},
-		ScatteredPrey = {spellID = 445768, talentID = 117566},
-		CoveringFire = {spellID = 445715, talentID = 123783},
-		CulltheHerd = {spellID = 445717, talentID = 117564},
-		FuriousAssault = {spellID = 445699, talentID = 117576},
-		BeastofOpportunity = {spellID = 445700, talentID = 123781},
-		PackAssault = {spellID = 445721, talentID = 117563},
-	}
-	ids.BM_PvPTalent = {
+		howl_of_the_pack_leader = {
+			passiveID = 471876,
+			talentID = 117588
+		},
+		pack_mentality = {
+			passiveID = 472358,
+			talentID = 117582
+		},
+		dire_summons = {
+			passiveID = 472352,
+			talentID = 117589,
+		},
+		better_together = {
+			passiveID = 472357,
+			talentID = 117559
+		},
+		ursine_fury = {
+			passiveID = 472476,
+			talentID = 117569
+		},
+		envenomed_fangs = {
+			passiveID = 472524,
+			talentID = 128358
+		},
+		fury_of_the_wyvern = {
+			passiveID = 472550,
+			talentID = 117581
+		},
+		hogstrider = {
+			passiveID = 472639,
+			talentID = 117585
+		},
+		no_mercy = {
+			passiveID = 472660,
+			talentID = 117566
+		},
+		shell_cover = {
+			passiveID = 472707,
+			talentID = 117564
+		},
+		slicked_shoes = {
+			passiveID = 472719,
+			talentID = 117576
+		},
+		horsehair_tether = {
+			passiveID = 472729,
+			talentID = 123781
+		},
+		lead_from_the_front = {
+			passiveID = 472741,
+			talentID = 117563
+		}
+	},
+	pvp_talent = {
 
-	}
-	ids.BM_Form = {
-
-	}
-	ids.BM_Buff = {
+	},
+	buff = {
 		AspectoftheWild = 193530,
 		BestialWrath = 19574,
 		BeastCleave = 268877,
 		CalloftheWild = 359844,
 		Deathblow = 378770,
 		Frenzy = 272790,
+		hogstrider = 472640,
 		HuntersPrey = 378215,
-	}
-	ids.BM_Debuff = {
+	},
+	debuff = {
 		HuntersMark = 257284,
 		SerpentSting = 271788,
 		TarTrap = 135299,
-	}
-	ids.BM_PetAbility = {
+	},
+	pet_ability = {
 		Bite = {spellID = 17253},
 		Claw = {spellID = 16827},
 		Smack = {spellID = 49966},
@@ -221,11 +271,12 @@ local ConRO_Hunter, ids = ...;
 		SporeCloud = {spellID = 264056},
 		SoothingWater = {spellID = 264262},
 		SpiritShock = {spellID = 264265},
-	}
+	},
+}
 
---Marksmanship
-	ids.MM_Ability = {
-	--Hunter Baseline
+ids.marksmanship = {
+	ability = {
+	--Baseline
 		ArcaneShot = {spellID = 185358},
 		AspectoftheCheetah = {spellID = 186257},
 		AspectoftheTurtle = {spellID = 186265};
@@ -244,11 +295,16 @@ local ConRO_Hunter, ids = ...;
 		Disengage = {spellID = 781},
 		EagleEye = {spellID = 6197},
 		Exhilaration = {spellID = 109304},
-		EyesoftheBeast = {spellID = 321297},
 		FeignDeath = {spellID = 5384},
 		Flare = {spellID = 1543},
 		FreezingTrap = {spellID = 187650},
+		harriers_cry = {
+			spellID = 466904
+		},
 		HuntersMark = {spellID = 257284},
+		MultiShot = {
+			spellID = 257620,
+		},
 		PetUtility = {
 			BeastLore = {spellID = 1462},
 			DismissPet = {spellID = 2641},
@@ -259,9 +315,15 @@ local ConRO_Hunter, ids = ...;
 		},
 		SteadyShot = {spellID = 56641},
 		WingClip = {spellID = 195645},
-	--Marksmanship Baseline
+	--Passive
+		eyes_in_the_sky = {
+			spellID = 1219616,
+		},
+		manhunter = {
+			spellID = 1217788,
+		},
 		MasterySniperTraining = {spellID = 193468},
-	--Hunter
+	--Hunter Talents
 		NaturalMending = {spellID = 270581, talentID = 126465},
 		Posthaste = {spellID = 109215, talentID = 126475},
 		KillShot = {spellID = 53351, talentID = 126463},
@@ -285,7 +347,7 @@ local ConRO_Hunter, ids = ...;
 		DisruptiveRounds = {spellID = 343244, talentID = 126459},
 		NoHardFeelings = {spellID = 459546, talentID = 126476},
 		ScareBeast = {spellID = 1513, talentID = 126445},
-		Intimidation = {spellID = 19577, talentID = 126461},
+		Intimidation = {spellID = 474421, talentID = 128413},
 		ExplosiveShot = {spellID = 212431, talentID = 126485},
 		BindingShot = {spellID = 109248, talentID = 126449},
 		BurstingShot = {spellID = 186387, talentID = 126487},
@@ -312,55 +374,206 @@ local ConRO_Hunter, ids = ...;
 		HighExplosiveTrap = {spellID = 236776, talentID = 126830},
 		ImplosiveTrap = {spellID = 462031, talentID = 126829},
 		UnnaturalCauses = {spellID = 459527, talentID = 126450},
-	--Marksmanship
-		AimedShot = {spellID = 19434, talentID = 126357},
-		RapidFire = {spellID = 257044, talentID = 126378},
-		MultiShot = {spellID = 257620, talentID = 126355},
-		PreciseShot = {spellID = 260240, talentID = 126354},
-		SurgingShots = {spellID = 391559, talentID = 126380},
-		Streamline = {spellID = 260367, talentID = 126368},
-		ImprovedSteadyShot = {spellID = 321018, talentID = 126388},
-		PinCushion = {spellID = 468392, talentID = 128222},
-		CrackShot = {spellID = 321293, talentID = 126389},
-		PenetratingShots = {spellID = 459783, talentID = 126391},
-		TrickShots = {spellID = 257621, talentID = 126369},
-		MasterMarksman = {spellID = 260309, talentID = 126356},
-		FantheHammer = {spellID = 459794, talentID = 126374},
-		CarefulAim = {spellID = 260228, talentID = 126373},
-		HeavyAmmo = {spellID = 378910, talentID = 126395},
-		LightAmmo = {spellID = 378913, talentID = 126394},
-		Bulletstorm = {spellID = 389019, talentID = 126363},
-		LockandLoad = {spellID = 194595, talentID = 126384},
-		SteadyFocus = {spellID = 193533, talentID = 126353},
-		ImprovedDeathblow = {spellID = 378769, talentID = 126365},
-		Barrage = {spellID = 120360, talentID = 126392},
-		NightHunter = {spellID = 378766, talentID = 126381},
-		TacticalReload= {spellID = 400472, talentID = 126371},
-		SerpentstalkersTrickery = {spellID = 378888, talentID = 126375},
-		ChimaeraShot = {spellID = 342049, talentID = 126383},
-		KillerAccuracy = {spellID = 378765, talentID = 126390},
-		RapidFireBarrage = {spellID = 459800, talentID = 126362},
-		IntheRhythm = {spellID = 407404, talentID = 126379},
-		LoneWolf = {spellID = 155228, talentID = 126360},
-		Bullseye = {spellID = 204089, talentID = 126358},
-		HydrasBite = {spellID = 260241, talentID = 126361},
-		Volley = {spellID = 260243, talentID = 126377},
-		LegacyoftheWindrunners = {spellID = 406425, talentID = 126387},
-		Trueshot = {spellID = 288613, talentID = 126364},
-		FocusedAim = {spellID = 378767, talentID = 126393},
-		RazorFragments = {spellID = 384790, talentID = 126382},
-		WailingArrowPassive = {spellID = 459806, talentID = 126359},
-			WailingArrow = {spellID = 392060, talentID = 126359},
-		UnerringVision = {spellID = 386878, talentID = 126386},
-		SmallGameHunter = {spellID = 459802, talentID = 126385},
-		KillZone = {spellID = 459921, talentID = 126370},
-		Readiness = {spellID = 389865, talentID = 126367},
-		CallingtheShots = {spellID = 260404, talentID = 126372},
-		Salvo = {spellID = 400456, talentID = 126376},
-	--Hero
+	--Marksmanship Talents
+		AimedShot = {
+			spellID = 19434,
+			talentID = 128404,
+		},
+		RapidFire = {
+			spellID = 257044,
+			talentID = 128383,
+		},
+		PreciseShot = {
+			spellID = 260240,
+			talentID = 128399,
+		},
+		Streamline = {
+			spellID = 260367,
+			talentID = 128405,
+		},
+		TrickShots = {
+			spellID = 257621,
+			talentID = 128378,
+		},
+		aspect_of_the_hydra = {
+			passiveID = 470945,
+			talentID = 128377,
+		},
+		ammo_conservation = {
+			passiveID = 459794,
+			talentID = 128397,
+		},
+		penetrating_shots = {
+			passiveID = 459783,
+			talentID = 128717,
+		},
+		improved_spotters_mark = {
+			passiveID = 466867,
+			talentID = 128710,
+		},
+		unbreakable_bond = {
+			passiveID = 1223323,
+			talentID = 129619,
+		},
+		LockandLoad = {
+			passiveID = 194595,
+			talentID = 128410,
+		},
+		IntheRhythm = {
+			passiveID = 407404,
+			talentID = 128368
+		},
+		SurgingShots = {
+			passiveID = 391559,
+			talentID = 128386,
+		},
+		tenacious = {
+			passiveID = 474456,
+			talentID = 128408,
+		},
+		cunning = {
+			passiveID = 474440,
+			talentID = 128411,
+		},
+		MasterMarksman = {
+			spellID = 260309,
+			talentID = 126356,
+		},
+		quickdraw = {
+			passiveID = 473380,
+			talentID = 128385,
+		},
+		ImprovedDeathblow = {
+			spellID = 378769,
+			talentID = 128391,
+		},
+		obsidian_arrowhead = {
+			passiveID = 471350,
+			talentID = 128380,
+		},
+		on_target = {
+			passiveID = 471348,
+			talentID = 128714,
+		},
+		Trueshot = {
+			spellID = 288613,
+			talentID = 128367,
+		},
+		moving_target = {
+			passiveID = 474296,
+			talentID = 128402,
+		},
+		precision_detonation = {
+			passiveID = 471369,
+			talentID = 128369,
+		},
+		RazorFragments = {
+			passiveID = 384790,
+			talentID = 128387,
+		},
+		headshot = {
+			passiveID = 471363,
+			talentID = 128394,
+		},
+		deadeye = {
+			passiveID = 321460,
+			talentID = 128715,
+		},
+		no_scope = {
+			passiveID = 473385,
+			talentID = 128375,
+		},
+		feathered_frenzy = {
+			passiveID = 470943,
+			talentID = 128406,
+		},
+		target_acquisition = {
+			passiveID = 473379,
+			talentID = 128390,
+		},
+		shrapnel_shot = {
+			passiveID = 473520,
+			talentID = 128709,
+		},
+		magnetic_gunpowder = {
+			passiveID = 473522,
+			talentID = 128403,
+		},
+		eagles_accuracy = {
+			passiveID = 473369,
+			talentID = 128395,
+		},
+		CallingtheShots = {
+			spellID = 260404,
+			talentID = 126372
+		},
+		Bullseye = {
+			passiveID = 204089,
+			talentID = 128370,
+		},
+		improved_streamline = {
+			passiveID = 471427,
+			talentID = 128409,
+		},
+		FocusedAim = {
+			spellID = 378767,
+			talentID = 128716,
+		},
+		killer_mark = {
+			passiveID = 1215032,
+			talentID = 128610,
+		},
+		Bulletstorm = {
+			passiveID = 389019,
+			talentID = 128384,
+		},
+		tensile_bowstring = {
+			passiveID = 471366,
+			talentID = 128388,
+		},
+		Volley = {
+			spellID = 260243,
+			talentID = 128376,
+		},
+		ohnahran_winds = {
+			passiveID = 1215021,
+			talentID = 128401,
+		},
+		SmallGameHunter = {
+			passiveID = 459802,
+			talentID = 128400,
+		},
+		windrunner_quiver = {
+			passiveID = 473523,
+			talentID = 128372,
+		},
+		incendiary_ammunition = {
+			passiveID = 471428,
+			talentID = 128407,
+		},
+		double_tap = {
+			passiveID = 473370,
+			talentID = 128373,
+		},
+		unerring_vision = {
+			passiveID = 474738,
+			talentID = 129294,
+		},
+		kill_zone = {
+			passiveID = 459921,
+			talentID = 128382,
+		},
+		salvo = {
+			passiveID = 400456,
+			talentID = 128381,
+		},
+		bullet_hell = {
+			passiveID = 473378,
+			talentID = 128609,
+		},
+	--Hero Talents
 	--Dark Ranger
-		BlackArrowPassive = {spellID = 466932, talentID = 117584},
-			BlackArrow = {spellID = 466930, talentID = 117584},
+		BlackArrow = {passiveID = 466932, spellID = 466930, talentID = 117584},
 		BleakArrows = {spellID = 467749, talentID = 117558},
 		ShadowHounds = {spellID = 430707, talentID = 117580},
 		SoulDrinker = {spellID = 469638, talentID = 128238},
@@ -390,32 +603,30 @@ local ConRO_Hunter, ids = ...;
 		Overwatch = {spellID = 450384, talentID = 117577},
 		CrescentSteel = {spellID = 451530, talentID = 123870},
 		LunarStorm = {spellID = 450385, talentID = 117575},
-	}
-	ids.MM_PvPTalent = {
+	},
+	pvp_talent = {
 
-	}
-	ids.MM_Form = {
-		LoneWolf = 164273,
-		WailingArrow = 459805,
-	}
-	ids.MM_Buff = {
+	},
+	buff = {
+		bulletstorm = 389020,
 		Deathblow = 378770,
+		double_tap = 260402,
 		PreciseShots = 260242,
 		TrickShots = 257622,
 		Trueshot = 193526,
 		LockandLoad = 194594,
 		RazorFragments = 388998,
-		SteadyFocus = 193534,
-		WailingArrow = 392058,
-	}
-	ids.MM_Debuff = {
+		streamline = 342076,
+		volley = 260243,
+	},
+	debuff = {
 		ExplosiveShot = 212431,
 		HuntersMark = 257284,
+		lunar_storm = 451803,
 		SerpentSting = 271788,
 		TarTrap = 135299,
-		Volley = 260243,
-	}
-	ids.MM_PetAbility = {
+	},
+	pet_ability = {
 		Bite = {spellID = 17253},
 		Claw = {spellID = 16827},
 		Smack = {spellID = 49966},
@@ -429,9 +640,10 @@ local ConRO_Hunter, ids = ...;
 		SoothingWater = {spellID = 264262},
 		SpiritShock = {spellID = 264265},
 	}
+}
 
---Survival
-	ids.Surv_Ability = {
+ids.survival = {
+	ability = {
 	--Hunter Baseline
 		ArcaneShot = {spellID = 185358},
 		AspectoftheCheetah = {spellID = 186257},
@@ -537,17 +749,24 @@ local ConRO_Hunter, ids = ...;
 		ImprovedWildfireBomb = {spellID = 321290, talentID = 126334},
 		SulfurLinedPockets = {spellID = 459828, talentID = 126326},
 		Butchery = {spellID = 212436, talentID = 126350},
+		FlankingStrike = {spellID = 269751, talentID = 128690},
 		BloodyClaws = {spellID = 385737, talentID = 126328},
 		AlphaPredator = {spellID = 269737, talentID = 126319},
 		Ranger = {spellID = 385695, talentID = 126315},
 		GrenadeJuggler = {spellID = 459843, talentID = 126347},
-		FlankingStrike = {spellID = 269751, talentID = 126338},
+		cull_the_herd = {
+			passiveID = 1217429,
+			talentID = 126338,
+		},
 		FrenzyStrikes = {spellID = 294029, talentID = 126346},
 		MercilessBlows = {spellID = 459868, talentID = 126327},
 		VipersVenom = {spellID = 268501, talentID = 126320},
 		Bloodseeker = {spellID = 260248, talentID = 126330},
 		TermsofEngagement = {spellID = 265895, talentID = 126348},
-		ExposedFlank = {spellID = 459861, talentID = 126331},
+		born_to_kill = {
+			passiveID = 1217434,
+			talentID = 126331
+		},
 		TacticalAdvantage = {spellID = 378951, talentID = 126337},
 		SicEm = {spellID = 459920, talentID = 126340},
 		ContagiousReagents = {spellID = 459741, talentID = 126336},
@@ -560,25 +779,63 @@ local ConRO_Hunter, ids = ...;
 		Spearhead = {spellID = 360966, talentID = 126351},
 		RuthlessMarauder = {spellID = 470068, talentID = 126321},
 		SymbioticAdrenaline = {spellID = 459875, talentID = 126318},
-		RelentlessPrimal = {spellID = 459922, talentID = 126317},
+		RelentlessPrimalFerocity = {spellID = 459922, talentID = 126317},
 		Bombardier = {spellID = 389880, talentID = 126333},
 		DeadlyDuo = {spellID = 378962, talentID = 126344},
 	--Hero
 	--Pack Leader
-		ViciousHunt = {spellID = 445404, talentID = 117588},
-		PackCoordination = {spellID = 445505, talentID = 117582},
-		HowlofthePack = {spellID = 445707, talentID = 117589},
-		WildAttacks = {spellID = 445708, talentID = 117559},
-		DenRecovery = {spellID = 445710, talentID = 117569},
-		TirelessHunt = {spellID = 445701, talentID = 117581},
-		CorneredPrey = {spellID = 445702, talentID = 123782},
-		FrenziedTear = {spellID = 445696, talentID = 117585},
-		ScatteredPrey = {spellID = 445768, talentID = 117566},
-		CoveringFire = {spellID = 445715, talentID = 123783},
-		CulltheHerd = {spellID = 445717, talentID = 117564},
-		FuriousAssault = {spellID = 445699, talentID = 117576},
-		BeastofOpportunity = {spellID = 445700, talentID = 123781},
-		PackAssault = {spellID = 445721, talentID = 117563},
+		howl_of_the_pack_leader = {
+			passiveID = 471876,
+			talentID = 117588
+		},
+		pack_mentality = {
+			passiveID = 472358,
+			talentID = 117582
+		},
+		dire_summons = {
+			passiveID = 472352,
+			talentID = 117589,
+		},
+		better_together = {
+			passiveID = 472357,
+			talentID = 117559
+		},
+		ursine_fury = {
+			passiveID = 472476,
+			talentID = 117569
+		},
+		envenomed_fangs = {
+			passiveID = 472524,
+			talentID = 128358
+		},
+		fury_of_the_wyvern = {
+			passiveID = 472550,
+			talentID = 117581
+		},
+		hogstrider = {
+			passiveID = 472639,
+			talentID = 117585
+		},
+		no_mercy = {
+			passiveID = 472660,
+			talentID = 117566
+		},
+		shell_cover = {
+			passiveID = 472707,
+			talentID = 117564
+		},
+		slicked_shoes = {
+			passiveID = 472719,
+			talentID = 117576
+		},
+		horsehair_tether = {
+			passiveID = 472729,
+			talentID = 123781
+		},
+		lead_from_the_front = {
+			passiveID = 472741,
+			talentID = 117563
+		},
 	--Sentinel
 		Sentinel = {spellID = 450369, talentID = 117573},
 		DontLookBack = {spellID = 450373, talentID = 117586},
@@ -594,34 +851,30 @@ local ConRO_Hunter, ids = ...;
 		Overwatch = {spellID = 450384, talentID = 117577},
 		CrescentSteel = {spellID = 451530, talentID = 123870},
 		LunarStorm = {spellID = 450385, talentID = 117575},
-	}
-	ids.Surv_PvPTalent = {
+	},
+	pvp_talent = {
 
-	}
-	ids.Surv_Form = {
-
-	}
-	ids.Surv_Buff = {
+	},
+	buff = {
 		AspectoftheEagle = 186289,
 		CoordinatedAssault = 266779,
 		DeadlyDuo = 397568,
 		Deathblow = 378770,
-		FuriousAssault = 0,
-		LunarStorm = 0,
 		MongooseFury = 259388,
 		Spearhead = 360966,
 		TermsofEngagement = 262898,
 		TipoftheSpear = 260286,
 		VipersVenom = 268552,
-	}
-	ids.Surv_Debuff = {
+	},
+	debuff = {
 		HuntersMark = 257284,
 		InternalBleeding = 270343,
+		lunar_storm = 451803,
 		SerpentSting = 259491,
 		TarTrap = 135299,
 		WildfireBomb = 269747,
-	}
-	ids.Surv_PetAbility = {
+	},
+	pet_ability = {
 		Bite = {spellID = 17253},
 		Claw = {spellID = 16827},
 		Smack = {spellID = 49966},
@@ -635,3 +888,4 @@ local ConRO_Hunter, ids = ...;
 		SoothingWater = {spellID = 264262},
 		SpiritShock = {spellID = 264265},
 	}
+}
